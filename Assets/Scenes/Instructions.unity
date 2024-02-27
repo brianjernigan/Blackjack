@@ -1065,8 +1065,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -30.0493, y: -63.691406}
-  m_SizeDelta: {x: 1131.8766, y: 611.5181}
+  m_AnchoredPosition: {x: 8.5189, y: -39}
+  m_SizeDelta: {x: 1768.8036, y: 611.5181}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1252771723
 MonoBehaviour:
@@ -1088,7 +1088,18 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Instructions
+  m_text: 'In this game, you will be playing a simplified version of the popular
+    casino game, Blackjack. Here, the computer is the house and it will be competing
+    against you, the player. At the beginning of each round, all participants are
+    dealt two cards. The players can see both of their cards, but one of the House''s
+    cards will be hidden until the end of the round. The player will be given the
+    chance to take additional cards in an attempt to get as close to 21 as possible.
+    If a player goes over 21, they will "bust," and lose the game. Once the player
+    is done "hitting," the House will reveal their card and will take additional
+    cards if its total is less than 16. If the House busts, and the player has not,
+    the player wins. If neither have busted, then their hands will be compared and
+    the closer to 21 will win the round. A score of 21 is a Blackjack and will always
+    win the round. '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1115,8 +1126,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
-  m_fontSizeBase: 72
+  m_fontSize: 43
+  m_fontSizeBase: 43
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1494,7 +1505,7 @@ GameObject:
   - component: {fileID: 2033414944}
   - component: {fileID: 2033414943}
   m_Layer: 5
-  m_Name: WelcomeText
+  m_Name: InstructionsWelcome
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1539,7 +1550,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Welcome to Brian's Blackjack!
+  m_text: Instructions
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
