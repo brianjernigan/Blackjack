@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 82193128}
   - component: {fileID: 82193127}
   m_Layer: 5
-  m_Name: EndTurnButton
+  m_Name: StayButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -532,8 +532,8 @@ RectTransform:
   - {fileID: 2033414942}
   - {fileID: 360448125}
   - {fileID: 72010999}
-  - {fileID: 82193126}
   - {fileID: 421784716}
+  - {fileID: 82193126}
   - {fileID: 807332412133063000}
   m_Father: {fileID: 1274648079}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1006,7 +1006,7 @@ GameObject:
   - component: {fileID: 839278279}
   - component: {fileID: 839278278}
   m_Layer: 5
-  m_Name: EndTurnButtonText
+  m_Name: StayButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1051,7 +1051,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: End Turn
+  m_text: Stay
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1395,6 +1395,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aab9f6d1026737f4886ce04a6245250a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dealButton: {fileID: 72011000}
+  _hitButton: {fileID: 421784717}
+  _stayButton: {fileID: 82193127}
 --- !u!4 &1373666914
 Transform:
   m_ObjectHideFlags: 0
