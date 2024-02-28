@@ -35,6 +35,8 @@ public class Card
 
     private readonly Dictionary<CardName, int> _cardValues = new()
     {
+        // Default Ace to 1, will change depending on scenario
+        { CardName.Ace, 1 },
         { CardName.Two, 2 },
         { CardName.Three, 3 },
         { CardName.Four, 4 },
@@ -46,8 +48,7 @@ public class Card
         { CardName.Ten, 10 },
         { CardName.Jack, 10 },
         { CardName.Queen, 10 },
-        { CardName.King, 10 },
-        { CardName.Ace, 11 }
+        { CardName.King, 10 }
     };
     
     public Card(CardName name, CardSuit suit)
@@ -57,5 +58,6 @@ public class Card
         CardValue = _cardValues[name];
     }
 
+    // For debugging
     public override string ToString() => $"{Name} of {Suit}";
 }
