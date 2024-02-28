@@ -10,15 +10,13 @@ public class GameController : MonoBehaviour
     [SerializeField] private Button _dealButton;
     [SerializeField] private Button _hitButton;
     [SerializeField] private Button _stayButton;
-
+    
     private Deck _gameDeck;
 
     private void Start()
     {
         _gameDeck = new Deck();
-        var cards = _gameDeck.InitializeDeck();
-        Debug.Log(cards[0]);
-        Debug.Log(cards[0].CardValue);
+        Debug.Log(_gameDeck.NewDeck[0]);
     }
 
     public void OnClickQuitButton()

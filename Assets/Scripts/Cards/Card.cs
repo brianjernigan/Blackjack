@@ -5,7 +5,6 @@ using UnityEngine;
 public enum CardName
 {
     Ace,
-    One,
     Two,
     Three,
     Four,
@@ -30,51 +29,33 @@ public enum CardSuit
 
 public class Card
 {
-    private CardName _cardName;
-    private CardSuit _cardSuit;
+    public CardName Name { get; }
+    public CardSuit Suit { get; }
+    public int CardValue { get; set; }
 
-    public CardName CardName
+    private readonly Dictionary<CardName, int> _cardValues = new()
     {
-        get => _cardName;
-        set => _cardName = value;
+        { CardName.Two, 2 },
+        { CardName.Three, 3 },
+        { CardName.Four, 4 },
+        { CardName.Five, 5 },
+        { CardName.Six, 6 },
+        { CardName.Seven, 7 },
+        { CardName.Eight, 8 },
+        { CardName.Nine, 9 },
+        { CardName.Ten, 10 },
+        { CardName.Jack, 10 },
+        { CardName.Queen, 10 },
+        { CardName.King, 10 },
+        { CardName.Ace, 11 }
+    };
+    
+    public Card(CardName name, CardSuit suit)
+    {
+        Name = name;
+        Suit = suit;
+        CardValue = _cardValues[name];
     }
 
-    public CardSuit CardSuit
-    {
-        get => _cardSuit;
-        set => _cardSuit = value;
-    }
-
-    public int CardValue
-    {
-        get
-        {
-            return _cardName switch
-            {
-                CardName.One => 1,
-                CardName.Two => 2,
-                CardName.Three => 3,
-                CardName.Four => 4,
-                CardName.Five => 5,
-                CardName.Six => 6,
-                CardName.Seven => 7,
-                CardName.Eight => 8,
-                CardName.Nine => 9,
-                CardName.Ten => 10,
-                CardName.Jack => 10,
-                CardName.Queen => 10,
-                CardName.King => 10,
-                _ => 0,
-            };
-        }
-        set{}
-    }
-
-    public Card(CardName cardName, CardSuit cardSuit)
-    {
-        _cardName = cardName;
-        _cardSuit = cardSuit;
-    }
-
-    public override string ToString() => $"{CardName} of {CardSuit}";
+    public override string ToString() => $"{Name} of {Suit}";
 }

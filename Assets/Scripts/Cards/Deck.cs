@@ -2,20 +2,41 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class Deck
 {
-    public List<Card> InitializeDeck()
+    private List<Card> _newDeck;
+    public List<Card> NewDeck => _newDeck;
+
+    // Constructor
+    public Deck()
     {
-        var freshDeck = new List<Card>();
+        InitializeDeck();
+        ShuffleDeck();
+    }
+    
+    private void InitializeDeck()
+    {
+        _newDeck = new List<Card>();
         foreach (CardName cName in Enum.GetValues(typeof(CardName)))
         {
             foreach (CardSuit cSuit in Enum.GetValues(typeof(CardSuit)))
             {
                 var newCard = new Card(cName, cSuit);
-                freshDeck.Add(newCard);
+                _newDeck.Add(newCard);
             }
         }
-        return freshDeck;
+    }
+
+    private void ShuffleDeck()
+    {
+        var deckSize = _newDeck.Count;
+        while (deckSize > 1)
+        {
+            deckSize--;
+            var next = new Random().Next(deckSize + 1);
+            (_newDeck[next], _newDeck[deckSize]) = (_newDeck[deckSize], _newDeck[next]);
+        }
     }
 }
