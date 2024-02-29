@@ -25,20 +25,13 @@ public class GameController : MonoBehaviour
         _humanPlayer = new HumanPlayer("Brian");
         _cpuPlayer = new ComputerPlayer();
     }
-
-    private void InitializeDeck()
-    {
-        _gameDeck = new Deck(_cards);
-    }
     
     private void Start()
     {
         InitializePlayers();
-        InitializeDeck();
+        _gameDeck = new Deck(_cards);
         _humanPlayer.Hand = _gameDeck.DealInitialHand();
         _cpuPlayer.Hand = _gameDeck.DealInitialHand();
-        Debug.Log(_humanPlayer.Hand.Cards[0]);
-        Debug.Log(_cpuPlayer.Hand.Cards[0]);
     }
 
     public void OnClickDealButton()
