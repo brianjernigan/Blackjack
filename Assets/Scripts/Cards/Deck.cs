@@ -53,16 +53,16 @@ public class Deck
         return topCard;
     }
 
-    public Hand InitialDeal()
-    {
-        var hand = new Hand();
-        var initialHand = new List<Card>();
-        for (var i = 0; i < 2; i++)
-        {
-            initialHand.Add(DrawCard());
-        }
-
-        hand.Cards = initialHand;
-        return hand;
-    }
+    // public Hand InitialDeal()
+    // {
+    //     var hand = new Hand();
+    //     var initialHand = new List<Card>();
+    //     for (var i = 0; i < 2; i++)
+    //     {
+    //         initialHand.Add(DrawCard());
+    //     }
+    //
+    //     hand.Cards = initialHand;
+    //     return hand;
+    // }
 }
