@@ -13,7 +13,8 @@ public class GameController : MonoBehaviour
     [SerializeField] private Button _stayButton;
 
     [Header("Deck")]
-    [SerializeField] private Deck _gameDeck;
+    private Deck _gameDeck;
+    [SerializeField] private List<Card> _cards;
     
     [Header("Players")]
     private HumanPlayer _humanPlayer;
@@ -24,12 +25,17 @@ public class GameController : MonoBehaviour
         _humanPlayer = new HumanPlayer("Brian");
         _cpuPlayer = new ComputerPlayer();
     }
+
+    private void InitializeDeck()
+    {
+        _gameDeck = new Deck(_cards);
+        Debug.Log(_gameDeck.Cards[0]);
+    }
     
     private void Start()
     {
         InitializePlayers();
-        Debug.Log(_gameDeck.DrawCard());
-        Debug.Log(_gameDeck.Cards.Count);
+        InitializeDeck();
     }
 
     public void OnClickDealButton()

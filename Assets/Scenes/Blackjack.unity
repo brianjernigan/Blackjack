@@ -1397,51 +1397,6 @@ MonoBehaviour:
   _dealButton: {fileID: 72011000}
   _hitButton: {fileID: 421784717}
   _stayButton: {fileID: 82193127}
-  _gameDeck: {fileID: 1713185439}
---- !u!4 &1373666914
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373666912}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 584.2757, y: 329.2848, z: 3.1712787}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1713185438
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1713185440}
-  - component: {fileID: 1713185439}
-  m_Layer: 0
-  m_Name: Deck
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1713185439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1713185438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a07dc5cd839b1724392a891c8dca24d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   _cards:
   - {fileID: 11400000, guid: e7326ad493179344f82c2f40c7c384c6, type: 2}
   - {fileID: 11400000, guid: ec9bbf5a39e5bc94c8ba0d3655b947a3, type: 2}
@@ -1495,17 +1450,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: efceb7d01950d11459e6952a7a4e6eb7, type: 2}
   - {fileID: 11400000, guid: 25212cc45f066774aa9d7fddf149d15e, type: 2}
   - {fileID: 11400000, guid: 6173f2c35a2e306408c8cbb7d7405b77, type: 2}
-  _cardOnScreen: {fileID: 0}
---- !u!4 &1713185440
+--- !u!4 &1373666914
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1713185438}
+  m_GameObject: {fileID: 1373666912}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 557.77313, y: 327.84457, z: 3.4784877}
+  m_LocalPosition: {x: 584.2757, y: 329.2848, z: 3.1712787}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1787,4 +1741,3 @@ SceneRoots:
   - {fileID: 1274648079}
   - {fileID: 558205121}
   - {fileID: 1373666914}
-  - {fileID: 1713185440}

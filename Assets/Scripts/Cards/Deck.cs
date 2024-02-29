@@ -6,37 +6,37 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
 
-public class Deck : MonoBehaviour
+public class Deck
 {
-    [SerializeField] private List<Card> _cards;
+    public List<Card> Cards { get; set; }
 
-    public List<Card> Cards
+    public Deck(List<Card> cards)
     {
-        get => _cards;
-        set => _cards = value;
+        Cards = cards;
+        ShuffleDeck();
     }
-
-    public Card DrawCard()
+    
+    private Card DrawCard()
     {
-        if (!_cards.Any())
+        if (!Cards.Any())
         {
             throw new IndexOutOfRangeException();
         }
 
-        var firstCard = _cards[0];
-        _cards.RemoveAt(0);
+        var firstCard = Cards[0];
+        Cards.RemoveAt(0);
         return firstCard;
     }
     
     private void ShuffleDeck()
     {
-        var deckSize = _cards.Count;
+        var deckSize = Cards.Count;
         while (deckSize > 1)
         {
             deckSize--;
             var next = new Random().Next(deckSize + 1);
             // Nice C# implementation of swapping values, no tmp needed
-            (_cards[next], _cards[deckSize]) = (_cards[deckSize], _cards[next]);
+            (Cards[next], Cards[deckSize]) = (Cards[deckSize], Cards[next]);
         }
     }
 }
