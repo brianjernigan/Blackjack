@@ -10,10 +10,23 @@ public class Deck
 {
     public List<Card> Cards { get; set; }
 
+    // Constructor
     public Deck(List<Card> cards)
     {
         Cards = cards;
         ShuffleDeck();
+    }
+    
+    private void ShuffleDeck()
+    {
+        var deckSize = Cards.Count;
+        while (deckSize > 1)
+        {
+            deckSize--;
+            var next = new Random().Next(deckSize + 1);
+            // Nice C# implementation of swapping values, no tmp needed
+            (Cards[next], Cards[deckSize]) = (Cards[deckSize], Cards[next]);
+        }
     }
     
     private Card DrawCard()
@@ -27,16 +40,15 @@ public class Deck
         Cards.RemoveAt(0);
         return firstCard;
     }
-    
-    private void ShuffleDeck()
+
+    public Hand DealInitialHand()
     {
-        var deckSize = Cards.Count;
-        while (deckSize > 1)
+        var hand = new Hand();
+        for (int i = 0; i < 2; i++)
         {
-            deckSize--;
-            var next = new Random().Next(deckSize + 1);
-            // Nice C# implementation of swapping values, no tmp needed
-            (Cards[next], Cards[deckSize]) = (Cards[deckSize], Cards[next]);
+            hand.Cards.Add(DrawCard());
         }
+
+        return hand;
     }
 }

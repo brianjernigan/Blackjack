@@ -29,13 +29,16 @@ public class GameController : MonoBehaviour
     private void InitializeDeck()
     {
         _gameDeck = new Deck(_cards);
-        Debug.Log(_gameDeck.Cards[0]);
     }
     
     private void Start()
     {
         InitializePlayers();
         InitializeDeck();
+        _humanPlayer.Hand = _gameDeck.DealInitialHand();
+        _cpuPlayer.Hand = _gameDeck.DealInitialHand();
+        Debug.Log(_humanPlayer.Hand.Cards[0]);
+        Debug.Log(_cpuPlayer.Hand.Cards[0]);
     }
 
     public void OnClickDealButton()
