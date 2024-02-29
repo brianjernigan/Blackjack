@@ -5,21 +5,16 @@ using UnityEngine;
 
 public class Hand
 {
-    private List<Card> _hand;
+    public List<Card> Cards { get; set; }
 
     public int CalculateHand()
     {
         var sum = 0;
-        foreach (var card in _hand)
+        foreach (var card in Cards)
         {
-            sum += card._cardValue;
+            sum += card.CardValue;
         }
 
         return sum;
-    }
-
-    public Hand()
-    {
-        _hand = new List<Card>();
     }
 }

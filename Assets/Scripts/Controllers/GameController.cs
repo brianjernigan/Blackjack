@@ -10,19 +10,31 @@ public class GameController : MonoBehaviour
     [SerializeField] private Button _dealButton;
     [SerializeField] private Button _hitButton;
     [SerializeField] private Button _stayButton;
+
+    [Header("Deck")]
+    [SerializeField] private Deck _gameDeck;
     
+    [Header("Players")]
     private HumanPlayer _humanPlayer;
     private ComputerPlayer _cpuPlayer;
     
     private void InitializePlayers()
     {
-        _humanPlayer = new HumanPlayer();
+        _humanPlayer = new HumanPlayer("Brian");
         _cpuPlayer = new ComputerPlayer();
     }
     
     private void Start()
     {
-        
+        InitializePlayers();
+    }
+
+    public void OnClickDealButton()
+    {
+        // Draw cards
+        // Assign 2 cards to player and cpu
+        // Instantiate cards on screen
+        // Set card images
     }
 
     public void OnClickQuitButton()
