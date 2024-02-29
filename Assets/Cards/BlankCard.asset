@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardValue: 0
   _cardName: Blank
+  _isHidden: 1
   _cardSprite: {fileID: 1233084853, guid: 8ff26269b276d9a44af145a06a25cfac, type: 3}

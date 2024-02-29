@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = System.Random;
 
 public class GameController : MonoBehaviour
 {
@@ -27,14 +28,16 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         InitializePlayers();
+        Debug.Log(_gameDeck.DrawCard());
+        Debug.Log(_gameDeck.Cards.Count);
     }
 
     public void OnClickDealButton()
     {
-        // Draw cards
-        // Assign 2 cards to player and cpu
-        // Instantiate cards on screen
+        // Deal two cards to each player
+        // Assign the two cards to players' hands
         // Set card images
+        // Reveal only one of the computer's cards
     }
 
     public void OnClickQuitButton()

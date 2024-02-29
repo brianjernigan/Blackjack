@@ -7,6 +7,7 @@ public class Card : ScriptableObject
 {
     [SerializeField] private int _cardValue;
     [SerializeField] private string _cardName;
+    [SerializeField] private bool _isHidden;
     [SerializeField] private Sprite _cardSprite;
 
     public int CardValue
