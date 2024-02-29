@@ -4,5 +4,10 @@ using UnityEngine;
 
 public class Player
 {
-    
+    public Hand Hand { get; set; }
+
+    protected Player()
+    {
+        Hand = new Hand();
+    }
 }

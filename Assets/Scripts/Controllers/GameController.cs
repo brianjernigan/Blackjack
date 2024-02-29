@@ -10,14 +10,28 @@ public class GameController : MonoBehaviour
     [SerializeField] private Button _dealButton;
     [SerializeField] private Button _hitButton;
     [SerializeField] private Button _stayButton;
-    
-    private Deck _deck;
 
+    private Deck _gameDeck;
+    private HumanPlayer _humanPlayer;
+    private ComputerPlayer _cpuPlayer;
+    
+    private void InitializePlayers()
+    {
+        _humanPlayer = new HumanPlayer();
+        _cpuPlayer = new ComputerPlayer();
+    }
+
+    private void InitializePlayerHands()
+    {
+        _humanPlayer.Hand = _gameDeck.InitialDeal();
+        _cpuPlayer.Hand = _gameDeck.InitialDeal();
+    }
+    
     private void Start()
     {
-        _deck = new Deck();
-        Debug.Log(_deck.GameDeck[0]);
-        Debug.Log(_deck.GameDeck[0].CardValue);
+        _gameDeck = new Deck();
+        InitializePlayers();
+        InitializePlayerHands();
     }
 
     public void OnClickQuitButton()
