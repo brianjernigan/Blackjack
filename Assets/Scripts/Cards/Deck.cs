@@ -8,7 +8,7 @@ using Random = System.Random;
 
 public class Deck
 {
-    public List<Card> Cards { get; set; }
+    private List<Card> Cards { get; set; }
 
     // Constructor
     public Deck(List<Card> cards)
