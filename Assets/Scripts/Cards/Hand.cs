@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Hand
 {
-    private List<SO_Card> _hand;
+    private List<Card> _hand;
 
     public int CalculateHand()
     {
@@ -20,6 +20,6 @@ public class Hand
 
     public Hand()
     {
-        _hand = new List<SO_Card>();
+        _hand = new List<Card>();
     }
 }

@@ -1,25 +1,19 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = System.Random;
 
-public class Deck
+public class Deck : MonoBehaviour
 {
-    public List<Card> Cards { get; private set; }
+    [SerializeField] private List<Card> _cards;
 
-    private void InitializeDeck()
+    [SerializeField] private GameObject _cardOnScreen;
+
+    public List<Card> Cards
     {
-        Cards = new List<Card>();
-        foreach (CardName cName in Enum.GetValues(typeof(CardName)))
-        {
-            foreach (CardSuit cSuit in Enum.GetValues(typeof(CardSuit)))
-            {
-                var newCard = new Card(cName, cSuit);
-                Cards.Add(newCard);
-            }
-        }
+        get => _cards;
+        set => _cards = value;
     }
 
     private void ShuffleDeck()
@@ -32,37 +26,12 @@ public class Deck
             // Nice C# implementation of swapping values, no tmp needed
             (Cards[next], Cards[deckSize]) = (Cards[deckSize], Cards[next]);
         }
-    }
+    }    
     
-    // Constructor
-    public Deck()
+    private void Start()
     {
-        InitializeDeck();
         ShuffleDeck();
+        var firstCard = Cards[0];
+        _cardOnScreen.GetComponent<Image>().sprite = firstCard._cardSprite;
     }
-
-    public Card DrawCard()
-    {
-        if (!Cards.Any())
-        {
-            throw new IndexOutOfRangeException("Deck is empty");
-        }
-
-        var topCard = Cards[0];
-        Cards.RemoveAt(0);
-        return topCard;
-    }
-
-    // public Hand InitialDeal()
-    // {
-    //     var hand = new Hand();
-    //     var initialHand = new List<Card>();
-    //     for (var i = 0; i < 2; i++)
-    //     {
-    //         initialHand.Add(DrawCard());
-    //     }
-    //
-    //     hand.Cards = initialHand;
-    //     return hand;
-    // }
 }
