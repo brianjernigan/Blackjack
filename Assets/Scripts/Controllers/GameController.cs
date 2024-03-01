@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using Image = UnityEngine.UI.Image;
 using Random = System.Random;
 
 public class GameController : MonoBehaviour
@@ -23,8 +26,11 @@ public class GameController : MonoBehaviour
 
     [SerializeField] private Canvas _gameCanvas;
     [SerializeField] private GameObject _cardPrefab;
+    [SerializeField] private GameObject _dividerBar;
     [SerializeField] private Transform _humanHandZone;
     [SerializeField] private Transform _cpuPlayerHandZone;
+
+    private const float HorizontalPadding = 100f;
     
     private void InitializePlayers()
     {
@@ -44,14 +50,17 @@ public class GameController : MonoBehaviour
         _cpuPlayer.Hand = _gameDeck.DealInitialHand();
         // Set card images
         // Reveal only one of the computer's cards
-        ActivateInGameButtons();
-        InstantiateCard(_humanPlayer.Hand.Cards[0], _humanHandZone);
+        ActivateInGameElements();
+        SpawnHand(_humanPlayer.Hand, _humanHandZone);
     }
 
     public void OnClickHitButton()
     {
         // Deal new card and add to hand
         _humanPlayer.Hand.AddCard(_gameDeck.DrawCard());
+        _humanHandZone.transform.position = new Vector3(_humanHandZone.transform.position.x - (HorizontalPadding / 2),
+            _humanHandZone.transform.position.y, _humanHandZone.transform.position.z);
+        SpawnHand(_humanPlayer.Hand, _humanHandZone);
         PrintHand(_humanPlayer.Hand);
     }
 
@@ -61,19 +70,32 @@ public class GameController : MonoBehaviour
         // Start cpu turn
     }
 
-    private void ActivateInGameButtons()
+    private void ActivateInGameElements()
     {
         _hitButton.gameObject.SetActive(true);
         _stayButton.gameObject.SetActive(true);
         _dealButton.gameObject.SetActive(false);
+        _dividerBar.SetActive(true);
     }
 
-    private void InstantiateCard(Card cardOnScreen, Transform zone)
+    private void SpawnHand(Hand hand, Transform zone)
     {
-        var cardElement = Instantiate(_cardPrefab, _humanHandZone);
-        cardElement.GetComponent<Image>().sprite = cardOnScreen.CardSprite;
+        for (int i = 0; i < hand.Cards.Count; i++)
+        {
+            var startingPos = zone.transform.position;
+            var spawnPos = startingPos + i * HorizontalPadding * Vector3.right.normalized;
+            var cardOnScreen = Instantiate(_cardPrefab, spawnPos, Quaternion.identity, zone);
+            cardOnScreen.GetComponent<Image>().sprite = hand.Cards[i].CardSprite;
+        }
     }
 
+    private void SpawnCard(Card card, Transform zone, List<Card> instantiatedCards)
+    {
+        var spawnPos = zone.transform.position + instantiatedCards.Count * HorizontalPadding * Vector3.right.normalized;
+        var cardOnScreen = Instantiate(_cardPrefab, spawnPos, Quaternion.identity, zone);
+        cardOnScreen.GetComponent<Image>().sprite = card.CardSprite;
+    }
+    
     private void PrintHand(Hand hand)
     {
         foreach (var card in hand.Cards)
