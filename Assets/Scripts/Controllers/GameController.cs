@@ -58,10 +58,9 @@ public class GameController : MonoBehaviour
     {
         // Deal new card and add to hand
         _humanPlayer.Hand.AddCard(_gameDeck.DrawCard());
-        _humanHandZone.transform.position = new Vector3(_humanHandZone.transform.position.x - (HorizontalPadding / 2),
+        _humanHandZone.transform.position = new Vector3(_humanHandZone.transform.position.x - HorizontalPadding,
             _humanHandZone.transform.position.y, _humanHandZone.transform.position.z);
         SpawnHand(_humanPlayer.Hand, _humanHandZone);
-        PrintHand(_humanPlayer.Hand);
     }
 
     public void OnClickStayButton()
@@ -94,14 +93,6 @@ public class GameController : MonoBehaviour
         var spawnPos = zone.transform.position + instantiatedCards.Count * HorizontalPadding * Vector3.right.normalized;
         var cardOnScreen = Instantiate(_cardPrefab, spawnPos, Quaternion.identity, zone);
         cardOnScreen.GetComponent<Image>().sprite = card.CardSprite;
-    }
-    
-    private void PrintHand(Hand hand)
-    {
-        foreach (var card in hand.Cards)
-        {
-            Debug.Log(card.CardName);
-        }
     }
 
     public void OnClickQuitButton()
