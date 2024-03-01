@@ -1267,7 +1267,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blank_Card
+      name: Card_Back
       rect:
         serializedVersion: 2
         x: 544
@@ -1344,7 +1344,7 @@ TextureImporter:
       Ace_Diamonds: 769917756
       Ace_Hearts: -1993086024
       Ace_Spades: -1223006589
-      Blank_Card: 1233084853
+      Card_Back: 1233084853
       Eight_Clubs: -1905693520
       Eight_Diamonds: -1623487415
       Eight_Hearts: 1004630978

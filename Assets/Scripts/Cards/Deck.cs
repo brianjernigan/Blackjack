@@ -29,7 +29,7 @@ public class Deck
         }
     }
     
-    private Card DrawCard()
+    public Card DrawCard()
     {
         if (!Cards.Any())
         {
@@ -46,7 +46,7 @@ public class Deck
         var hand = new Hand();
         for (int i = 0; i < 2; i++)
         {
-            hand.Cards.Add(DrawCard());
+            hand.AddCard(DrawCard());
         }
 
         return hand;

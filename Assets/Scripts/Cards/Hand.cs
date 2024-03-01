@@ -9,12 +9,11 @@ public class Hand
 
     public int CalculateHand()
     {
-        var sum = 0;
-        foreach (var card in Cards)
-        {
-            sum += card.CardValue;
-        }
+        return Cards.Sum(card => card.CardValue);
+    }
 
-        return sum;
+    public void AddCard(Card cardToAdd)
+    {
+        Cards.Add(cardToAdd);
     }
 }
