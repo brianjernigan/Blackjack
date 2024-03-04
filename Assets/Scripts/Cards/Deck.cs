@@ -17,6 +17,7 @@ public class Deck
         ShuffleDeck();
     }
     
+    // Fisher-Yates algorithm
     private void ShuffleDeck()
     {
         var deckSize = Cards.Count;

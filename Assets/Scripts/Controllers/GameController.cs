@@ -24,12 +24,13 @@ public class GameController : MonoBehaviour
     private HumanPlayer _humanPlayer;
     private ComputerPlayer _cpuPlayer;
 
+    [Header("On-Screen Elements - Dealing")]
     [SerializeField] private Canvas _gameCanvas;
-    [SerializeField] private GameObject _cardPrefab;
-    [SerializeField] private GameObject _dividerBar;
     [SerializeField] private Transform _humanHandZone;
     [SerializeField] private Transform _cpuPlayerHandZone;
-
+    [SerializeField] private GameObject _cardPrefab;
+    [SerializeField] private GameObject _dividerBar;
+    
     private const float HorizontalPadding = 100f;
     
     private void InitializePlayers()
