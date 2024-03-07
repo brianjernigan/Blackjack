@@ -8,7 +8,7 @@ using Random = System.Random;
 
 public class Deck
 {
-    private List<Card> Cards { get; set; }
+    public List<Card> Cards { get; set; }
 
     // Constructor
     public Deck(List<Card> cards)
@@ -29,27 +29,11 @@ public class Deck
             (Cards[next], Cards[deckSize]) = (Cards[deckSize], Cards[next]);
         }
     }
-    
+
     public Card DrawCard()
     {
-        if (!Cards.Any())
-        {
-            throw new IndexOutOfRangeException();
-        }
-
-        var firstCard = Cards[0];
+        var topCard = Cards[0];
         Cards.RemoveAt(0);
-        return firstCard;
-    }
-
-    public Hand DealInitialHand()
-    {
-        var hand = new Hand();
-        for (int i = 0; i < 2; i++)
-        {
-            hand.AddCard(DrawCard());
-        }
-
-        return hand;
+        return topCard;
     }
 }
