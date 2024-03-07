@@ -826,7 +826,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Nine_Spade
+      name: Nine_Diamonds
       rect:
         serializedVersion: 2
         x: 612
@@ -1368,8 +1368,8 @@ TextureImporter:
       King_Hearts: 1901439431
       King_Spades: -1199987873
       Nine_Clubs: 824232409
+      Nine_Diamonds: 1048852360
       Nine_Hearts: 1084110804
-      Nine_Spade: 1048852360
       Nine_Spades: -137752672
       Queen_Clubs: 170811062
       Queen_Diamonds: -1016204067

@@ -3,66 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = System.Random;
 
-public class Deck
+public class Deck : MonoBehaviour
 {
-    public List<Card> Cards { get; private set; }
+    [SerializeField] private List<Card> _cards;
 
-    private void InitializeDeck()
+    public List<Card> Cards
     {
-        Cards = new List<Card>();
-        foreach (CardName cName in Enum.GetValues(typeof(CardName)))
-        {
-            foreach (CardSuit cSuit in Enum.GetValues(typeof(CardSuit)))
-            {
-                var newCard = new Card(cName, cSuit);
-                Cards.Add(newCard);
-            }
-        }
+        get => _cards;
+        set => _cards = value;
     }
 
+    public Card DrawCard()
+    {
+        if (!_cards.Any())
+        {
+            throw new IndexOutOfRangeException();
+        }
+
+        var firstCard = _cards[0];
+        _cards.RemoveAt(0);
+        return firstCard;
+    }
+    
     private void ShuffleDeck()
     {
-        var deckSize = Cards.Count;
+        var deckSize = _cards.Count;
         while (deckSize > 1)
         {
             deckSize--;
             var next = new Random().Next(deckSize + 1);
             // Nice C# implementation of swapping values, no tmp needed
-            (Cards[next], Cards[deckSize]) = (Cards[deckSize], Cards[next]);
+            (_cards[next], _cards[deckSize]) = (_cards[deckSize], _cards[next]);
         }
-    }
-    
-    // Constructor
-    public Deck()
-    {
-        InitializeDeck();
-        ShuffleDeck();
-    }
-
-    public Card DrawCard()
-    {
-        if (!Cards.Any())
-        {
-            throw new IndexOutOfRangeException("Deck is empty");
-        }
-
-        var topCard = Cards[0];
-        Cards.RemoveAt(0);
-        return topCard;
-    }
-
-    public Hand InitialDeal()
-    {
-        var hand = new Hand();
-        var initialHand = new List<Card>();
-        for (var i = 0; i < 2; i++)
-        {
-            initialHand.Add(DrawCard());
-        }
-
-        hand.Cards = initialHand;
-        return hand;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = System.Random;
 
 public class GameController : MonoBehaviour
 {
@@ -11,27 +12,32 @@ public class GameController : MonoBehaviour
     [SerializeField] private Button _hitButton;
     [SerializeField] private Button _stayButton;
 
-    private Deck _gameDeck;
+    [Header("Deck")]
+    [SerializeField] private Deck _gameDeck;
+    
+    [Header("Players")]
     private HumanPlayer _humanPlayer;
     private ComputerPlayer _cpuPlayer;
     
     private void InitializePlayers()
     {
-        _humanPlayer = new HumanPlayer();
+        _humanPlayer = new HumanPlayer("Brian");
         _cpuPlayer = new ComputerPlayer();
-    }
-
-    private void InitializePlayerHands()
-    {
-        _humanPlayer.Hand = _gameDeck.InitialDeal();
-        _cpuPlayer.Hand = _gameDeck.InitialDeal();
     }
     
     private void Start()
     {
-        _gameDeck = new Deck();
         InitializePlayers();
-        InitializePlayerHands();
+        Debug.Log(_gameDeck.DrawCard());
+        Debug.Log(_gameDeck.Cards.Count);
+    }
+
+    public void OnClickDealButton()
+    {
+        // Deal two cards to each player
+        // Assign the two cards to players' hands
+        // Set card images
+        // Reveal only one of the computer's cards
     }
 
     public void OnClickQuitButton()
