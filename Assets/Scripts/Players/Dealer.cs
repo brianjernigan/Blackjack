@@ -1,35 +1,51 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class Dealer : IPlayer
+public class Dealer : Player
 {
-    public Hand Hand { get; set; }
     public Deck Deck { get; set; }
+    public DealerHand DealerHand { get; set; }
 
     public Dealer(Deck gameDeck)
     {
         Deck = gameDeck;
-        Hand = new Hand();
+        DealerHand = new DealerHand();
     }
     
-    public void DealInitialHands(IPlayer human, IPlayer dealer)
+    public void DealCard(Player activePlayer)
     {
-        human.Hand.AddCard(Deck.DrawCard());
-        human.Hand.AddCard(Deck.DrawCard());
-        dealer.Hand.AddCard(Deck.DrawCard());
-        dealer.Hand.AddCard(Deck.DrawCard());
+        Deck.DrawCard(activePlayer);
+    }
+    
+    public void DealInitialHands(List<Player> activePlayers)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            foreach (var player in activePlayers)
+            {
+                DealCard(player);
+            }
+        }
+
+        DealerHand.HiddenCard = DealerHand.Cards[0];
+        FlipCard(DealerHand.HiddenCard);
     }
 
-    public void Hit()
+    private void FlipCard(Card cardToFlip)
     {
-        Hand.AddCard(Deck.DrawCard());
+        cardToFlip.IsHidden = !cardToFlip.IsHidden;
     }
-
-    public void Stay()
+    
+    public override string ToString()
     {
-        throw new NotImplementedException();
+        var handString = "";
+        foreach (var card in DealerHand.Cards)
+        {
+            handString += card.CardName + ", ";
+        }
+
+        return handString;
     }
 }

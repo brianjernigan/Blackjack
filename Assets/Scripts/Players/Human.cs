@@ -1,25 +1,19 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Human : IPlayer
+public class Human : Player
 {
-   public Hand Hand { get; set; } = new();
-   public Deck Deck { get; set; }
+   public Hand HumanHand { get; set; } = new HumanHand();
 
-   public Human(Deck gameDeck)
+   public override string ToString()
    {
-      Deck = gameDeck;
-   }
+      var handString = "";
+      foreach (var card in HumanHand.Cards)
+      {
+         handString += card.CardName + ", ";
+      }
 
-   public void Hit()
-   {
-      Hand.AddCard(Deck.DrawCard());
-   }
-
-   public void Stay()
-   {
-      throw new NotImplementedException();
+      return handString;
    }
 }

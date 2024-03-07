@@ -8,7 +8,7 @@ using Random = System.Random;
 
 public class Deck
 {
-    public List<Card> Cards { get; set; }
+    private List<Card> Cards { get; set; }
 
     // Constructor
     public Deck(List<Card> cards)
@@ -30,10 +30,18 @@ public class Deck
         }
     }
 
-    public Card DrawCard()
+    public void DrawCard(Player activePlayer)
     {
         var topCard = Cards[0];
         Cards.RemoveAt(0);
-        return topCard;
+        switch (activePlayer)
+        {
+            case Dealer dealer:
+                dealer.DealerHand.Cards.Add(topCard);
+                break;
+            case Human human:
+                human.HumanHand.Cards.Add(topCard);
+                break;
+        }
     }
 }
