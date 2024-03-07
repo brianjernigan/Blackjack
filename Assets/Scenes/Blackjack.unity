@@ -1628,10 +1628,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 25212cc45f066774aa9d7fddf149d15e, type: 2}
   - {fileID: 11400000, guid: 6173f2c35a2e306408c8cbb7d7405b77, type: 2}
   _gameCanvas: {fileID: 1274648078}
-  _cardPrefab: {fileID: 3435736287366989246, guid: 7bf2d4edc18d3b0419de265a35eb257a, type: 3}
-  _dividerBar: {fileID: 107949425}
   _humanHandZone: {fileID: 570680147}
   _cpuPlayerHandZone: {fileID: 1886851011}
+  _cardPrefab: {fileID: 3435736287366989246, guid: 7bf2d4edc18d3b0419de265a35eb257a, type: 3}
+  _dividerBar: {fileID: 107949425}
 --- !u!4 &1373666914
 Transform:
   m_ObjectHideFlags: 0
