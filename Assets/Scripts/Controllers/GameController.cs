@@ -21,8 +21,8 @@ public class GameController : MonoBehaviour
     [SerializeField] private List<Card> _cards;
     
     [Header("Players")]
-    private HumanPlayer _humanPlayer;
-    private ComputerPlayer _cpuPlayer;
+    private Player _humanPlayer;
+    private Player _cpuPlayer;
 
     [Header("On-Screen Elements - Dealing")]
     [SerializeField] private Canvas _gameCanvas;
@@ -35,8 +35,8 @@ public class GameController : MonoBehaviour
     
     private void InitializePlayers()
     {
-        _humanPlayer = new HumanPlayer("Brian");
-        _cpuPlayer = new ComputerPlayer();
+        _humanPlayer = new Player();
+        _cpuPlayer = new Player();
     }
     
     private void Start()
