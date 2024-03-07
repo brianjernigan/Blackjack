@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardValue: 5
   _cardName: Five of Hearts
-  _cardSprite: {fileID: -2095361654, guid: 8ff26269b276d9a44af145a06a25cfac, type: 3}
+  _isHidden: 0
+  _frontOfCardSprite: {fileID: -2095361654, guid: 8ff26269b276d9a44af145a06a25cfac, type: 3}
+  _backOfCardSprite: {fileID: 1233084853, guid: 8ff26269b276d9a44af145a06a25cfac, type: 3}

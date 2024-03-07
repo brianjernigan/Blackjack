@@ -6,37 +6,50 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
 
-public class Deck : MonoBehaviour
+public class Deck
 {
-    [SerializeField] private List<Card> _cards;
+    private List<Card> Cards { get; set; }
 
-    public List<Card> Cards
+    // Constructor
+    public Deck(List<Card> cards)
     {
-        get => _cards;
-        set => _cards = value;
-    }
-
-    public Card DrawCard()
-    {
-        if (!_cards.Any())
-        {
-            throw new IndexOutOfRangeException();
-        }
-
-        var firstCard = _cards[0];
-        _cards.RemoveAt(0);
-        return firstCard;
+        Cards = cards;
+        ShuffleDeck();
     }
     
+    // Fisher-Yates algorithm
     private void ShuffleDeck()
     {
-        var deckSize = _cards.Count;
+        var deckSize = Cards.Count;
         while (deckSize > 1)
         {
             deckSize--;
             var next = new Random().Next(deckSize + 1);
             // Nice C# implementation of swapping values, no tmp needed
-            (_cards[next], _cards[deckSize]) = (_cards[deckSize], _cards[next]);
+            (Cards[next], Cards[deckSize]) = (Cards[deckSize], Cards[next]);
         }
+    }
+    
+    public Card DrawCard()
+    {
+        if (!Cards.Any())
+        {
+            throw new IndexOutOfRangeException();
+        }
+
+        var firstCard = Cards[0];
+        Cards.RemoveAt(0);
+        return firstCard;
+    }
+
+    public Hand DealInitialHand()
+    {
+        var hand = new Hand();
+        for (int i = 0; i < 2; i++)
+        {
+            hand.AddCard(DrawCard());
+        }
+
+        return hand;
     }
 }

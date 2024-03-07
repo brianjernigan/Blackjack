@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardValue: 10
   _cardName: King of Clubs
-  _cardSprite: {fileID: 1410985938, guid: 8ff26269b276d9a44af145a06a25cfac, type: 3}
+  _isHidden: 0
+  _frontOfCardSprite: {fileID: 1410985938, guid: 8ff26269b276d9a44af145a06a25cfac, type: 3}
+  _backOfCardSprite: {fileID: 1233084853, guid: 8ff26269b276d9a44af145a06a25cfac, type: 3}
