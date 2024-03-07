@@ -43,6 +43,7 @@ public class GameController : MonoBehaviour
     {
         InitializePlayers();
         _gameDeck = new Deck(_cards);
+        Debug.Log("Hello");
     }
 
     public void OnClickDealButton()
