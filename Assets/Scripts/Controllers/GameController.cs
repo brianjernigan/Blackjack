@@ -24,13 +24,15 @@ public class GameController : MonoBehaviour
     private readonly List<IPlayer> _playerList = new();
 
     [Header("On-Screen Elements - Dealing")]
-    [SerializeField] private Canvas _gameCanvas;
     [SerializeField] private Transform[] _humanCardZones;
     [SerializeField] private Transform[] _dealerCardZones;
     [SerializeField] private GameObject _cardPrefab;
     [SerializeField] private GameObject _dividerBar;
 
-    private int firstCardAfterDealNumber = 2;
+    private const int MaxNumberOfCardsInHand = 11;
+    
+    private int _activeHumanCardNumber;
+    private int _activeDealerCardNumber;
     
     private void InitializePlayers()
     {
@@ -55,8 +57,9 @@ public class GameController : MonoBehaviour
 
     public void OnClickHitButton()
     {
+        if (_activeHumanCardNumber >= MaxNumberOfCardsInHand || _humanPlayer.PlayerHand.HasBusted) return;
         _humanPlayer.Hit(_cpuDealer);
-        SpawnPlayerCardsAfterInitialDeal();
+        SpawnAdditionalHumanCards();
     }
 
     public void OnClickStayButton()
@@ -65,20 +68,23 @@ public class GameController : MonoBehaviour
         // Start cpu turn
     }
 
-    private void SpawnPlayerCardsAfterInitialDeal()
+    private void SpawnAdditionalHumanCards()
     {
-        if (firstCardAfterDealNumber > 9) return;
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[firstCardAfterDealNumber], firstCardAfterDealNumber,
-            _humanPlayer);
-        firstCardAfterDealNumber++;
+        if (_activeHumanCardNumber >= MaxNumberOfCardsInHand) return;
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_activeHumanCardNumber], _activeHumanCardNumber, _humanPlayer);
+        _activeHumanCardNumber++;
     }
 
     private void SpawnInitialHands()
     {
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[0], 0, _humanPlayer);
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[1], 1, _humanPlayer);
-        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[0], 0, _cpuDealer);
-        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[1], 1, _cpuDealer);
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_activeHumanCardNumber], _activeHumanCardNumber, _humanPlayer);
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_activeDealerCardNumber], _activeDealerCardNumber, _cpuDealer);
+        _activeHumanCardNumber++;
+        _activeDealerCardNumber++;
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_activeHumanCardNumber], _activeHumanCardNumber, _humanPlayer);
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_activeDealerCardNumber], _activeDealerCardNumber, _cpuDealer);
+        _activeHumanCardNumber++;
+        _activeDealerCardNumber++;
     }
 
     private void SpawnCard(Card cardOnScreen, int cardNumber, IPlayer activePlayer)
