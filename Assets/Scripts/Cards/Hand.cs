@@ -8,23 +8,26 @@ public class Hand
 {
     private const int BustingPoint = 21;
     public List<Card> CardsInHand { get; set; } = new();
-    public bool HasBusted => CalculateHand() > BustingPoint;
-    public bool HasBlackjack => CalculateHand() == BustingPoint;
-
-    private int CalculateHand()
-    {
-        if (!IsHoldingAce())
-        {
-            return CardsInHand.Sum(card => card.CardValue);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public int HandScore => CalculateHandScore();
+    public bool HasBusted => HandScore > BustingPoint;
+    public bool HasBlackjack => HandScore == BustingPoint && CardsInHand.Count == 2;
     
-    private bool IsHoldingAce()
+
+    private int CalculateHandScore()
     {
-        return CardsInHand.Any(card => card.CardName.Contains("Ace"));
+        var handScore = CardsInHand.Sum(card => card.CardValue);
+        var aceCount = CountAces();
+        while (aceCount > 0 && handScore > BustingPoint)
+        {
+            handScore -= 10;
+            aceCount--;
+        }
+
+        return handScore;
+    }
+
+    private int CountAces()
+    {
+        return CardsInHand.Count(card => card.CardName.Contains("Ace"));
     }
 }

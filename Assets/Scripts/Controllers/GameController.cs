@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour
         // Reveal only one of the computer's cards
         ActivateInGameElements();
         Debug.Log(_humanPlayer);
-        Debug.Log(_cpuDealer);
+        Debug.Log(_humanPlayer.PlayerHand.HandScore);
     }
 
     public void OnClickHitButton()
@@ -60,6 +60,7 @@ public class GameController : MonoBehaviour
         // Deal new card and add to hand
         _humanPlayer.Hit(_cpuDealer);
         Debug.Log(_humanPlayer);
+        Debug.Log(_humanPlayer.PlayerHand.HandScore);
     }
 
     public void OnClickStayButton()
