@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Dealer : IPlayer
 {
-    public Deck GameDeck { get; set; }
+    private Deck GameDeck { get; set; }
     public Hand PlayerHand { get; set; } = new();
     public Dealer(Deck gameGameDeck)
     {

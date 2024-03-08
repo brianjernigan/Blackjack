@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
-using UnityEngine.UIElements;
-using Button = UnityEngine.UI.Button;
-using Image = UnityEngine.UI.Image;
+using UnityEngine.UI;
 using Random = System.Random;
 
 public class GameController : MonoBehaviour
