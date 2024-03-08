@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class Human : IPlayer
@@ -17,12 +18,6 @@ public class Human : IPlayer
    }
    public override string ToString()
    {
-      var handString = "";
-      foreach (var card in PlayerHand.Cards)
-      {
-         handString += card.CardName + ", ";
-      }
-
-      return handString;
+      return PlayerHand.CardsInHand.Aggregate("", (current, card) => current + (card.CardName + ", "));
    }
 }

@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
 
     [Header("Deck")]
     private Deck _gameDeck;
-    [SerializeField] private List<Card> _cards;
+    [SerializeField] private List<Card> _allCards;
     
     [Header("Players")]
     private Human _humanPlayer;
@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour
     
     private void Start()
     {
-        _gameDeck = new Deck(_cards);
+        _gameDeck = new Deck(_allCards);
         InitializePlayers();
     }
 

@@ -1574,7 +1574,7 @@ MonoBehaviour:
   _dealButton: {fileID: 72011000}
   _hitButton: {fileID: 421784717}
   _stayButton: {fileID: 82193127}
-  _cards:
+  _allCards:
   - {fileID: 11400000, guid: e7326ad493179344f82c2f40c7c384c6, type: 2}
   - {fileID: 11400000, guid: ec9bbf5a39e5bc94c8ba0d3655b947a3, type: 2}
   - {fileID: 11400000, guid: e8fcd29e2afd5144482cfab7ec8bd144, type: 2}

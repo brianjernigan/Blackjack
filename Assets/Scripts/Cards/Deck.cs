@@ -8,32 +8,32 @@ using Random = System.Random;
 
 public class Deck
 {
-    private List<Card> Cards { get; set; }
+    private List<Card> CardsInDeck { get; set; }
 
     // Constructor
-    public Deck(List<Card> cards)
+    public Deck(List<Card> cardsInDeck)
     {
-        Cards = cards;
+        CardsInDeck = cardsInDeck;
         ShuffleDeck();
     }
     
     // Fisher-Yates shuffling
     private void ShuffleDeck()
     {
-        var deckSize = Cards.Count;
+        var deckSize = CardsInDeck.Count;
         while (deckSize > 1)
         {
             deckSize--;
             var next = new Random().Next(deckSize + 1);
             // Nice C# implementation of swapping values, no tmp needed
-            (Cards[next], Cards[deckSize]) = (Cards[deckSize], Cards[next]);
+            (CardsInDeck[next], CardsInDeck[deckSize]) = (CardsInDeck[deckSize], CardsInDeck[next]);
         }
     }
 
     public void DrawCard(IPlayer activePlayer)
     {
-        var topCard = Cards[0];
-        Cards.RemoveAt(0);
-        activePlayer.PlayerHand.Cards.Add(topCard);
+        var topCard = CardsInDeck[0];
+        CardsInDeck.RemoveAt(0);
+        activePlayer.PlayerHand.CardsInHand.Add(topCard);
     }
 }

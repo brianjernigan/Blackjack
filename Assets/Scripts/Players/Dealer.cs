@@ -1,15 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Dealer : IPlayer
 {
-    public Deck Deck { get; set; }
+    public Deck GameDeck { get; set; }
     public Hand PlayerHand { get; set; } = new();
-    public Dealer(Deck gameDeck)
+    public Dealer(Deck gameGameDeck)
     {
-        Deck = gameDeck;
+        GameDeck = gameGameDeck;
     }
 
     public void Hit(Dealer dealer)
@@ -24,7 +25,7 @@ public class Dealer : IPlayer
     
     public void DealCard(IPlayer activePlayer)
     {
-        Deck.DrawCard(activePlayer);
+        GameDeck.DrawCard(activePlayer);
     }
     
     public void DealInitialHands(List<IPlayer> activePlayers)
@@ -38,7 +39,7 @@ public class Dealer : IPlayer
         }
 
         // Hide dealer's first drawn card
-        FlipDealerCard(PlayerHand.Cards[0]);
+        FlipDealerCard(PlayerHand.CardsInHand[0]);
     }
 
     private void FlipDealerCard(Card cardToFlip)
@@ -48,12 +49,6 @@ public class Dealer : IPlayer
     
     public override string ToString()
     {
-        var handString = "";
-        foreach (var card in PlayerHand.Cards)
-        {
-            handString += card.CardName + ", ";
-        }
-
-        return handString;
+        return PlayerHand.CardsInHand.Aggregate("", (current, card) => current + (card.CardName + ", "));
     }
 }
