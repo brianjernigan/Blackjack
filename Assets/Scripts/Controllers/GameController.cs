@@ -25,10 +25,12 @@ public class GameController : MonoBehaviour
 
     [Header("On-Screen Elements - Dealing")]
     [SerializeField] private Canvas _gameCanvas;
-    [SerializeField] private Transform _humanHandZone;
-    [SerializeField] private Transform _cpuPlayerHandZone;
+    [SerializeField] private Transform[] _humanCardZones;
+    [SerializeField] private Transform[] _dealerCardZones;
     [SerializeField] private GameObject _cardPrefab;
     [SerializeField] private GameObject _dividerBar;
+
+    private int firstCardAfterDealNumber = 2;
     
     private void InitializePlayers()
     {
@@ -47,15 +49,14 @@ public class GameController : MonoBehaviour
     public void OnClickDealButton()
     {
         _cpuDealer.DealInitialHands(_playerList);
-        // Set card images
-        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[0]);
-
+        SpawnInitialHands();
         ActivateInGameElements();
     }
 
     public void OnClickHitButton()
     {
         _humanPlayer.Hit(_cpuDealer);
+        SpawnPlayerCardsAfterInitialDeal();
     }
 
     public void OnClickStayButton()
@@ -64,10 +65,33 @@ public class GameController : MonoBehaviour
         // Start cpu turn
     }
 
-    private void SpawnCard(Card cardOnScreen)
+    private void SpawnPlayerCardsAfterInitialDeal()
     {
-        var cardToSpawn = Instantiate(_cardPrefab, _humanHandZone);
-        Debug.Log(cardOnScreen.IsHidden);
+        if (firstCardAfterDealNumber > 9) return;
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[firstCardAfterDealNumber], firstCardAfterDealNumber,
+            _humanPlayer);
+        firstCardAfterDealNumber++;
+    }
+
+    private void SpawnInitialHands()
+    {
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[0], 0, _humanPlayer);
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[1], 1, _humanPlayer);
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[0], 0, _cpuDealer);
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[1], 1, _cpuDealer);
+    }
+
+    private void SpawnCard(Card cardOnScreen, int cardNumber, IPlayer activePlayer)
+    {
+        var spawnZone = activePlayer switch
+        {
+            Human => _humanCardZones,
+            Dealer => _dealerCardZones,
+            _ => null
+        };
+
+        if (spawnZone == null) return;
+        var cardToSpawn = Instantiate(_cardPrefab, spawnZone[cardNumber]);
         cardToSpawn.GetComponent<Image>().sprite = cardOnScreen.CardSprite;
     }
 
