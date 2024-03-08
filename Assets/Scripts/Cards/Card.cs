@@ -7,7 +7,6 @@ public class Card : ScriptableObject
 {
     [SerializeField] private int _cardValue;
     [SerializeField] private string _cardName;
-    [SerializeField] private bool _isHidden;
     [SerializeField] private Sprite _frontOfCardSprite;
     [SerializeField] private Sprite _backOfCardSprite;
 
@@ -21,5 +20,5 @@ public class Card : ScriptableObject
 
     public bool IsHidden { get; set; }
     
-    public Sprite CardSprite => _isHidden ? _backOfCardSprite : _frontOfCardSprite;
+    public Sprite CardSprite => IsHidden ? _backOfCardSprite : _frontOfCardSprite;
 }

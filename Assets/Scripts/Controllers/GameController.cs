@@ -46,27 +46,29 @@ public class GameController : MonoBehaviour
 
     public void OnClickDealButton()
     {
-        // Deal initial hands
         _cpuDealer.DealInitialHands(_playerList);
         // Set card images
-        // Reveal only one of the computer's cards
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[0]);
+
         ActivateInGameElements();
-        Debug.Log(_humanPlayer);
-        Debug.Log(_humanPlayer.PlayerHand.HandScore);
     }
 
     public void OnClickHitButton()
     {
-        // Deal new card and add to hand
         _humanPlayer.Hit(_cpuDealer);
-        Debug.Log(_humanPlayer);
-        Debug.Log(_humanPlayer.PlayerHand.HandScore);
     }
 
     public void OnClickStayButton()
     {
         // End turn
         // Start cpu turn
+    }
+
+    private void SpawnCard(Card cardOnScreen)
+    {
+        var cardToSpawn = Instantiate(_cardPrefab, _humanHandZone);
+        Debug.Log(cardOnScreen.IsHidden);
+        cardToSpawn.GetComponent<Image>().sprite = cardOnScreen.CardSprite;
     }
 
     private void ActivateInGameElements()

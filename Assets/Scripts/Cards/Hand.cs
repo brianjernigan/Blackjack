@@ -15,15 +15,15 @@ public class Hand
 
     private int CalculateHandScore()
     {
-        var handScore = CardsInHand.Sum(card => card.CardValue);
-        var aceCount = CountAces();
-        while (aceCount > 0 && handScore > BustingPoint)
+        var score = CardsInHand.Sum(card => card.CardValue);
+        var elevenCount = CountAces();
+        while (elevenCount > 0 && score > BustingPoint)
         {
-            handScore -= 10;
-            aceCount--;
+            score -= 10;
+            elevenCount--;
         }
 
-        return handScore;
+        return score;
     }
 
     private int CountAces()
