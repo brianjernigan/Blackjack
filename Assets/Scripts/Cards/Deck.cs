@@ -17,7 +17,7 @@ public class Deck
         ShuffleDeck();
     }
     
-    // Fisher-Yates algorithm
+    // Fisher-Yates shuffling
     private void ShuffleDeck()
     {
         var deckSize = Cards.Count;
@@ -30,18 +30,10 @@ public class Deck
         }
     }
 
-    public void DrawCard(Player activePlayer)
+    public void DrawCard(IPlayer activePlayer)
     {
         var topCard = Cards[0];
         Cards.RemoveAt(0);
-        switch (activePlayer)
-        {
-            case Dealer dealer:
-                dealer.DealerHand.Cards.Add(topCard);
-                break;
-            case Human human:
-                human.HumanHand.Cards.Add(topCard);
-                break;
-        }
+        activePlayer.PlayerHand.Cards.Add(topCard);
     }
 }

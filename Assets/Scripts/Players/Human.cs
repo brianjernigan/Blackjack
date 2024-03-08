@@ -2,14 +2,23 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Human : Player
+public class Human : IPlayer
 {
-   public Hand HumanHand { get; set; } = new HumanHand();
+   public Hand PlayerHand { get; set; } = new();
 
+   public void Hit(Dealer dealer)
+   {
+      dealer.DealCard(this);
+   }
+
+   public void Stay()
+   {
+      throw new NotImplementedException();
+   }
    public override string ToString()
    {
       var handString = "";
-      foreach (var card in HumanHand.Cards)
+      foreach (var card in PlayerHand.Cards)
       {
          handString += card.CardName + ", ";
       }

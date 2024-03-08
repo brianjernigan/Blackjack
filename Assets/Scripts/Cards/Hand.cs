@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class Hand
+public class Hand
 {
     private const int BustingPoint = 21;
     public List<Card> Cards { get; set; } = new();

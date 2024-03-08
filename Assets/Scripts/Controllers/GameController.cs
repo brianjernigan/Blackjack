@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
     [Header("Players")]
     private Human _humanPlayer;
     private Dealer _cpuDealer;
-    private readonly List<Player> _playerList = new();
+    private readonly List<IPlayer> _playerList = new();
 
     [Header("On-Screen Elements - Dealing")]
     [SerializeField] private Canvas _gameCanvas;

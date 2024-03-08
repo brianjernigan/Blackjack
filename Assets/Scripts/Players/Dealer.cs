@@ -3,25 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dealer : Player
+public class Dealer : IPlayer
 {
     public Deck Deck { get; set; }
-    public DealerHand DealerHand { get; set; }
-
+    public Hand PlayerHand { get; set; } = new();
     public Dealer(Deck gameDeck)
     {
         Deck = gameDeck;
-        DealerHand = new DealerHand();
+    }
+
+    public void Hit(Dealer dealer)
+    {
+        dealer.DealCard(this);
+    }
+
+    public void Stay()
+    {
+        throw new NotImplementedException();
     }
     
-    public void DealCard(Player activePlayer)
+    public void DealCard(IPlayer activePlayer)
     {
         Deck.DrawCard(activePlayer);
     }
     
-    public void DealInitialHands(List<Player> activePlayers)
+    public void DealInitialHands(List<IPlayer> activePlayers)
     {
-        for (int i = 0; i < 2; i++)
+        for (var i = 0; i < 2; i++)
         {
             foreach (var player in activePlayers)
             {
@@ -29,11 +37,11 @@ public class Dealer : Player
             }
         }
 
-        DealerHand.HiddenCard = DealerHand.Cards[0];
-        FlipCard(DealerHand.HiddenCard);
+        // Hide dealer's first drawn card
+        FlipDealerCard(PlayerHand.Cards[0]);
     }
 
-    private void FlipCard(Card cardToFlip)
+    private void FlipDealerCard(Card cardToFlip)
     {
         cardToFlip.IsHidden = !cardToFlip.IsHidden;
     }
@@ -41,7 +49,7 @@ public class Dealer : Player
     public override string ToString()
     {
         var handString = "";
-        foreach (var card in DealerHand.Cards)
+        foreach (var card in PlayerHand.Cards)
         {
             handString += card.CardName + ", ";
         }
