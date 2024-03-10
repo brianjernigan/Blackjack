@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -52,7 +53,8 @@ public class GameController : MonoBehaviour
     {
         _cpuDealer.DealInitialHands(_playerList);
         SpawnInitialHands();
-        ActivateInGameElements();
+        ActivatePlayerButtons();
+        _humanPlayer.IsActive = true;
     }
 
     public void OnClickHitButton()
@@ -66,8 +68,15 @@ public class GameController : MonoBehaviour
 
     public void OnClickStayButton()
     {
+        DeactivatePlayerButtons();
         // End turn
+        _humanPlayer.IsActive = false;
         // Start cpu turn
+        _cpuDealer.IsActive = true;
+        // Flip Dealer Card
+        _cpuDealer.FlippedCard.FlipCard();
+        // Flip dealer card on screen
+        // Hit or stay
     }
 
     private void SpawnAdditionalHumanCards()
@@ -101,12 +110,18 @@ public class GameController : MonoBehaviour
         cardCount++;
     }
 
-    private void ActivateInGameElements()
+    private void ActivatePlayerButtons()
     {
         _hitButton.gameObject.SetActive(true);
         _stayButton.gameObject.SetActive(true);
         _dealButton.gameObject.SetActive(false);
         _dividerBar.SetActive(true);
+    }
+
+    private void DeactivatePlayerButtons()
+    {
+        _hitButton.gameObject.SetActive(false);
+        _stayButton.gameObject.SetActive(false);
     }
 
     public void OnClickQuitButton()

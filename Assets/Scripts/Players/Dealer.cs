@@ -7,8 +7,10 @@ using UnityEngine;
 public class Dealer : IPlayer
 {
     public bool IsActive { get; set; }
-    private Deck GameDeck { get; set; }
+    private Deck GameDeck { get; }
     public Hand PlayerHand { get; set; } = new();
+    public Card FlippedCard { get; private set; }
+    
     public Dealer(Deck gameGameDeck)
     {
         GameDeck = gameGameDeck;
@@ -41,12 +43,8 @@ public class Dealer : IPlayer
         }
 
         // Hide dealer's first drawn card
-        FlipDealerCard(PlayerHand.CardsInHand[0]);
-    }
-
-    private void FlipDealerCard(Card cardToFlip)
-    {
-        cardToFlip.IsHidden = !cardToFlip.IsHidden;
+        FlippedCard = PlayerHand.CardsInHand[0];
+        FlippedCard.FlipCard();
     }
     
     public override string ToString()
