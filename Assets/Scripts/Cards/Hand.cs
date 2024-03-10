@@ -11,6 +11,7 @@ public class Hand
     public int HandScore => CalculateHandScore();
     public bool HasBusted => HandScore > BustingPoint;
     public bool HasBlackjack => HandScore == BustingPoint && CardsInHand.Count == 2;
+    public bool HasTwentyOne => HandScore == BustingPoint;
     
 
     private int CalculateHandScore()

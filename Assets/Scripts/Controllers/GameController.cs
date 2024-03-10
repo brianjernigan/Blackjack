@@ -31,8 +31,8 @@ public class GameController : MonoBehaviour
 
     private const int MaxNumberOfCardsInHand = 11;
     
-    private int _activeHumanCardNumber;
-    private int _activeDealerCardNumber;
+    private int _numCardsInHumanHand;
+    private int _numCardsInDealerHand;
     
     private void InitializePlayers()
     {
@@ -57,7 +57,9 @@ public class GameController : MonoBehaviour
 
     public void OnClickHitButton()
     {
-        if (_activeHumanCardNumber >= MaxNumberOfCardsInHand || _humanPlayer.PlayerHand.HasBusted) return;
+        var cannotHit = _numCardsInHumanHand >= MaxNumberOfCardsInHand || _humanPlayer.PlayerHand.HasBusted ||
+                        _humanPlayer.PlayerHand.HasBlackjack || _humanPlayer.PlayerHand.HasTwentyOne;
+        if (cannotHit) return;
         _humanPlayer.Hit(_cpuDealer);
         SpawnAdditionalHumanCards();
     }
@@ -70,25 +72,21 @@ public class GameController : MonoBehaviour
 
     private void SpawnAdditionalHumanCards()
     {
-        if (_activeHumanCardNumber >= MaxNumberOfCardsInHand) return;
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_activeHumanCardNumber], _activeHumanCardNumber, _humanPlayer);
-        _activeHumanCardNumber++;
+        if (_numCardsInHumanHand >= MaxNumberOfCardsInHand) return;
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
     }
 
     private void SpawnInitialHands()
     {
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_activeHumanCardNumber], _activeHumanCardNumber, _humanPlayer);
-        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_activeDealerCardNumber], _activeDealerCardNumber, _cpuDealer);
-        _activeHumanCardNumber++;
-        _activeDealerCardNumber++;
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_activeHumanCardNumber], _activeHumanCardNumber, _humanPlayer);
-        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_activeDealerCardNumber], _activeDealerCardNumber, _cpuDealer);
-        _activeHumanCardNumber++;
-        _activeDealerCardNumber++;
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
     }
 
-    private void SpawnCard(Card cardOnScreen, int cardNumber, IPlayer activePlayer)
+    private void SpawnCard(Card cardOnScreen, ref int cardCount, IPlayer activePlayer)
     {
+        // Where to spawn
         var spawnZone = activePlayer switch
         {
             Human => _humanCardZones,
@@ -97,8 +95,10 @@ public class GameController : MonoBehaviour
         };
 
         if (spawnZone == null) return;
-        var cardToSpawn = Instantiate(_cardPrefab, spawnZone[cardNumber]);
+        // What to spawn
+        var cardToSpawn = Instantiate(_cardPrefab, spawnZone[cardCount]);
         cardToSpawn.GetComponent<Image>().sprite = cardOnScreen.CardSprite;
+        cardCount++;
     }
 
     private void ActivateInGameElements()

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Human : IPlayer
 {
+   public bool IsActive { get; set; }
    public Hand PlayerHand { get; set; } = new();
 
    public void Hit(Dealer dealer)

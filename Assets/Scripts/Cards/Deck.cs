@@ -30,10 +30,10 @@ public class Deck
         }
     }
 
-    public void DrawCard(IPlayer activePlayer)
+    public Card DrawCard()
     {
         var topCard = CardsInDeck[0];
         CardsInDeck.RemoveAt(0);
-        activePlayer.PlayerHand.CardsInHand.Add(topCard);
+        return topCard;
     }
 }
