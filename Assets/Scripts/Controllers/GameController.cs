@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
-using UnityEngine.UIElements;
-using Button = UnityEngine.UI.Button;
-using Image = UnityEngine.UI.Image;
+using UnityEngine.UI;
 using Random = System.Random;
 
 public class GameController : MonoBehaviour
@@ -18,51 +16,52 @@ public class GameController : MonoBehaviour
 
     [Header("Deck")]
     private Deck _gameDeck;
-    [SerializeField] private List<Card> _cards;
+    [SerializeField] private List<Card> _allCards;
     
     [Header("Players")]
-    private Player _humanPlayer;
-    private Player _cpuPlayer;
+    private Human _humanPlayer;
+    private Dealer _cpuDealer;
+    private readonly List<IPlayer> _playerList = new();
 
     [Header("On-Screen Elements - Dealing")]
-    [SerializeField] private Canvas _gameCanvas;
-    [SerializeField] private Transform _humanHandZone;
-    [SerializeField] private Transform _cpuPlayerHandZone;
+    [SerializeField] private Transform[] _humanCardZones;
+    [SerializeField] private Transform[] _dealerCardZones;
     [SerializeField] private GameObject _cardPrefab;
     [SerializeField] private GameObject _dividerBar;
+
+    private const int MaxNumberOfCardsInHand = 11;
     
-    private const float HorizontalPadding = 100f;
+    private int _numCardsInHumanHand;
+    private int _numCardsInDealerHand;
     
     private void InitializePlayers()
     {
-        _humanPlayer = new Player();
-        _cpuPlayer = new Player();
+        _humanPlayer = new Human();
+        _cpuDealer = new Dealer(_gameDeck);
+        _playerList.Add(_humanPlayer);
+        _playerList.Add(_cpuDealer);
     }
     
     private void Start()
     {
+        _gameDeck = new Deck(_allCards);
         InitializePlayers();
-        _gameDeck = new Deck(_cards);
-        Debug.Log("Hello");
     }
 
     public void OnClickDealButton()
     {
-        _humanPlayer.Hand = _gameDeck.DealInitialHand();
-        _cpuPlayer.Hand = _gameDeck.DealInitialHand();
-        // Set card images
-        // Reveal only one of the computer's cards
+        _cpuDealer.DealInitialHands(_playerList);
+        SpawnInitialHands();
         ActivateInGameElements();
-        SpawnHand(_humanPlayer.Hand, _humanHandZone);
     }
 
     public void OnClickHitButton()
     {
-        // Deal new card and add to hand
-        _humanPlayer.Hand.AddCard(_gameDeck.DrawCard());
-        _humanHandZone.transform.position = new Vector3(_humanHandZone.transform.position.x - HorizontalPadding,
-            _humanHandZone.transform.position.y, _humanHandZone.transform.position.z);
-        SpawnHand(_humanPlayer.Hand, _humanHandZone);
+        var cannotHit = _numCardsInHumanHand >= MaxNumberOfCardsInHand || _humanPlayer.PlayerHand.HasBusted ||
+                        _humanPlayer.PlayerHand.HasBlackjack || _humanPlayer.PlayerHand.HasTwentyOne;
+        if (cannotHit) return;
+        _humanPlayer.Hit(_cpuDealer);
+        SpawnAdditionalHumanCards();
     }
 
     public void OnClickStayButton()
@@ -71,30 +70,43 @@ public class GameController : MonoBehaviour
         // Start cpu turn
     }
 
+    private void SpawnAdditionalHumanCards()
+    {
+        if (_numCardsInHumanHand >= MaxNumberOfCardsInHand) return;
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
+    }
+
+    private void SpawnInitialHands()
+    {
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
+        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
+        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
+    }
+
+    private void SpawnCard(Card cardOnScreen, ref int cardCount, IPlayer activePlayer)
+    {
+        // Where to spawn
+        var spawnZone = activePlayer switch
+        {
+            Human => _humanCardZones,
+            Dealer => _dealerCardZones,
+            _ => null
+        };
+
+        if (spawnZone == null) return;
+        // What to spawn
+        var cardToSpawn = Instantiate(_cardPrefab, spawnZone[cardCount]);
+        cardToSpawn.GetComponent<Image>().sprite = cardOnScreen.CardSprite;
+        cardCount++;
+    }
+
     private void ActivateInGameElements()
     {
         _hitButton.gameObject.SetActive(true);
         _stayButton.gameObject.SetActive(true);
         _dealButton.gameObject.SetActive(false);
         _dividerBar.SetActive(true);
-    }
-
-    private void SpawnHand(Hand hand, Transform zone)
-    {
-        for (int i = 0; i < hand.Cards.Count; i++)
-        {
-            var startingPos = zone.transform.position;
-            var spawnPos = startingPos + i * HorizontalPadding * Vector3.right.normalized;
-            var cardOnScreen = Instantiate(_cardPrefab, spawnPos, Quaternion.identity, zone);
-            cardOnScreen.GetComponent<Image>().sprite = hand.Cards[i].CardSprite;
-        }
-    }
-
-    private void SpawnCard(Card card, Transform zone, List<Card> instantiatedCards)
-    {
-        var spawnPos = zone.transform.position + instantiatedCards.Count * HorizontalPadding * Vector3.right.normalized;
-        var cardOnScreen = Instantiate(_cardPrefab, spawnPos, Quaternion.identity, zone);
-        cardOnScreen.GetComponent<Image>().sprite = card.CardSprite;
     }
 
     public void OnClickQuitButton()

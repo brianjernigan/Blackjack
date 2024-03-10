@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +8,14 @@ public class Card : ScriptableObject
 {
     [SerializeField] private int _cardValue;
     [SerializeField] private string _cardName;
-    [SerializeField] private bool _isHidden;
     [SerializeField] private Sprite _frontOfCardSprite;
     [SerializeField] private Sprite _backOfCardSprite;
+
+    // Resets scriptable object state when loaded
+    private void OnEnable()
+    {
+        IsHidden = false;
+    }
 
     public int CardValue
     {
@@ -21,5 +27,5 @@ public class Card : ScriptableObject
 
     public bool IsHidden { get; set; }
     
-    public Sprite CardSprite => _isHidden ? _backOfCardSprite : _frontOfCardSprite;
+    public Sprite CardSprite => IsHidden ? _backOfCardSprite : _frontOfCardSprite;
 }
