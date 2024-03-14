@@ -8,7 +8,7 @@ using Random = System.Random;
 
 public class Deck
 {
-    private List<Card> CardsInDeck { get; set; }
+    public List<Card> CardsInDeck { get; }
 
     // Constructor
     public Deck(List<Card> cardsInDeck)
@@ -28,12 +28,5 @@ public class Deck
             // Nice C# implementation of swapping values, no tmp needed
             (CardsInDeck[next], CardsInDeck[deckSize]) = (CardsInDeck[deckSize], CardsInDeck[next]);
         }
-    }
-
-    public Card DrawCard()
-    {
-        var topCard = CardsInDeck[0];
-        CardsInDeck.RemoveAt(0);
-        return topCard;
     }
 }

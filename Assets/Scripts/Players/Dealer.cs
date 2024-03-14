@@ -4,41 +4,40 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Dealer : IPlayer
+public class Dealer : Player
 {
-    public bool IsActive { get; set; }
     private Deck GameDeck { get; }
-    public Hand PlayerHand { get; set; } = new();
     public Card FlippedCard { get; private set; }
     
-    public Dealer(Deck gameGameDeck)
+    public Dealer(Deck gameDeck)
     {
-        GameDeck = gameGameDeck;
-    }
-
-    public void Hit(Dealer dealer)
-    {
-        dealer.DealCard(this);
+        GameDeck = gameDeck;
     }
 
     public void Stay()
     {
         throw new NotImplementedException();
     }
-    
-    public void DealCard(IPlayer activePlayer)
+
+    public Card DealCard()
     {
-        var topCard = GameDeck.DrawCard();
-        activePlayer.PlayerHand.CardsInHand.Add(topCard);
+        if (!GameDeck.CardsInDeck.Any())
+        {
+            throw new InvalidOperationException();
+        }
+
+        var topCard = GameDeck.CardsInDeck[0];
+        GameDeck.CardsInDeck.RemoveAt(0);
+        return topCard;
     }
     
-    public void DealInitialHands(List<IPlayer> activePlayers)
+    public void DealInitialHands(List<Player> activePlayers)
     {
         for (var i = 0; i < 2; i++)
         {
             foreach (var player in activePlayers)
             {
-                DealCard(player);
+                player.Hit(this);
             }
         }
 
