@@ -10,7 +10,7 @@ public class Dealer : IPlayer
     public Hand PlayerHand { get; set; } = new();
     
     private Deck GameDeck { get; }
-    public Card HiddenCard { get; set; }
+    public Card HiddenCard { get; private set; }
     
     // Constructor
     public Dealer(Deck gameDeck)
@@ -22,11 +22,6 @@ public class Dealer : IPlayer
     public void Hit(HitDelegate hit)
     {
         hit(this);
-    }
-
-    public void Stay()
-    {
-        throw new NotImplementedException();
     }
 
     private Card DrawCardFromDeck()

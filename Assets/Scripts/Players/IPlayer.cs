@@ -13,7 +13,6 @@ public interface IPlayer
     // When called from GameController, pass Dealer's DealCard method as delegate parameter
     // Probably unnecessary but fun to experiment
     void Hit(HitDelegate hit);
-    void Stay();
 
     string ToString()
     {

@@ -12,9 +12,4 @@ public class Human : IPlayer
    {
       hit(this);
    }
-   
-   public void Stay()
-   {
-      IsActive = false;
-   }
 }

@@ -54,7 +54,7 @@ public class GameController : MonoBehaviour
     {
         _cpuDealer.DealInitialHands(_playerList);
         SpawnInitialHands();
-        ActivatePlayerButtons();
+        ActivatePlayerActionButtons();
         _humanPlayer.IsActive = true;
     }
 
@@ -64,27 +64,51 @@ public class GameController : MonoBehaviour
                         _humanPlayer.PlayerHand.HasBlackjack || _humanPlayer.PlayerHand.HasTwentyOne;
         if (cannotHit) return;
         _humanPlayer.Hit(_cpuDealer.DealCard);
-        SpawnAdditionalHumanCards();
+        SpawnAdditionalCards(_humanPlayer);
     }
 
     public void OnClickStayButton()
     {
-        DeactivatePlayerButtons();
-        // End turn
-        _humanPlayer.Stay();
-        // Start cpu turn
-        _cpuDealer.IsActive = true;
-        // Flip Dealer Card
-        _cpuDealer.FlipHiddenCard();
-        // Flip Dealer Card On Screen
-        _dealerHiddenCard.GetComponent<Image>().sprite = _cpuDealer.HiddenCard.CardSprite;
-        // Hit or stay
+        SwitchTurns();
+        RevealDealerCard();
+        // CPU evaluation and actions
+        StartCoroutine(CpuTurn());
     }
 
-    private void SpawnAdditionalHumanCards()
+    private void SwitchTurns()
     {
-        if (_numCardsInHumanHand >= MaxNumberOfCardsInHand) return;
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
+        DeactivatePlayerActionButtons();
+        _humanPlayer.IsActive = false;
+        _cpuDealer.IsActive = true;
+    }
+
+    private void RevealDealerCard()
+    {
+        _cpuDealer.FlipHiddenCard();
+        _dealerHiddenCard.GetComponent<Image>().sprite = _cpuDealer.HiddenCard.CardSprite;
+    }
+
+    private IEnumerator CpuTurn()
+    {
+        while (_cpuDealer.PlayerHand.HandScore < 17)
+        {
+            yield return new WaitForSeconds(2.0f);
+            _cpuDealer.Hit(_cpuDealer.DealCard);
+            SpawnAdditionalCards(_cpuDealer);
+        }
+    }
+
+    private void SpawnAdditionalCards(IPlayer activePlayer)
+    {
+        if (activePlayer is Human)
+        {
+            if (_numCardsInHumanHand >= MaxNumberOfCardsInHand) return;
+            SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
+        } else if (activePlayer is Dealer)
+        {
+            if (_numCardsInDealerHand >= MaxNumberOfCardsInHand) return;
+            SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
+        }
     }
 
     private void SpawnInitialHands()
@@ -114,7 +138,7 @@ public class GameController : MonoBehaviour
         return cardToSpawn;
     }
 
-    private void ActivatePlayerButtons()
+    private void ActivatePlayerActionButtons()
     {
         _hitButton.gameObject.SetActive(true);
         _stayButton.gameObject.SetActive(true);
@@ -122,7 +146,7 @@ public class GameController : MonoBehaviour
         _dividerBar.SetActive(true);
     }
 
-    private void DeactivatePlayerButtons()
+    private void DeactivatePlayerActionButtons()
     {
         _hitButton.gameObject.SetActive(false);
         _stayButton.gameObject.SetActive(false);
