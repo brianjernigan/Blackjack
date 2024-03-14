@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
     [Header("Players")]
     private Human _humanPlayer;
     private Dealer _cpuDealer;
-    private readonly List<Player> _playerList = new();
+    private readonly List<IPlayer> _playerList = new();
 
     [Header("On-Screen Elements - Dealing")]
     [SerializeField] private Transform[] _humanCardZones;
@@ -93,7 +93,7 @@ public class GameController : MonoBehaviour
         SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
     }
 
-    private void SpawnCard(Card cardOnScreen, ref int cardCount, Player activePlayer)
+    private void SpawnCard(Card cardOnScreen, ref int cardCount, IPlayer activePlayer)
     {
         // Where to spawn
         var spawnZone = activePlayer switch
