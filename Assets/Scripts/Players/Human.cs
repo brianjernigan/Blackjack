@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Human : IPlayer
 {
-   public bool IsActive { get; set; }
+   public bool IsActive { get; set; } = true;
    public Hand PlayerHand { get; set; } = new();
-   
+
    public void Hit(HitDelegate hit)
    {
       hit(this);
@@ -15,6 +15,6 @@ public class Human : IPlayer
    
    public void Stay()
    {
-      throw new NotImplementedException();
+      IsActive = false;
    }
 }

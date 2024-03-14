@@ -25,12 +25,7 @@ public class Card : ScriptableObject
 
     public string CardName => _cardName;
 
-    private bool IsHidden { get; set; }
+    public bool IsHidden { get; set; }
     
     public Sprite CardSprite => IsHidden ? _backOfCardSprite : _frontOfCardSprite;
-
-    public void FlipCard()
-    {
-        IsHidden = !IsHidden;
-    }
 }

@@ -2358,6 +2358,7 @@ MonoBehaviour:
   - {fileID: 1262698173}
   _cardPrefab: {fileID: 3435736287366989246, guid: 7bf2d4edc18d3b0419de265a35eb257a, type: 3}
   _dividerBar: {fileID: 107949425}
+  _testSprite: {fileID: 1177519575, guid: 8ff26269b276d9a44af145a06a25cfac, type: 3}
 --- !u!4 &1373666914
 Transform:
   m_ObjectHideFlags: 0

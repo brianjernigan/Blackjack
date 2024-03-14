@@ -29,6 +29,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform[] _dealerCardZones;
     [SerializeField] private GameObject _cardPrefab;
     [SerializeField] private GameObject _dividerBar;
+    private GameObject _dealerHiddenCard;
 
     private const int MaxNumberOfCardsInHand = 11;
     
@@ -70,12 +71,13 @@ public class GameController : MonoBehaviour
     {
         DeactivatePlayerButtons();
         // End turn
-        _humanPlayer.IsActive = false;
+        _humanPlayer.Stay();
         // Start cpu turn
         _cpuDealer.IsActive = true;
         // Flip Dealer Card
-        _cpuDealer.FlippedCard.FlipCard();
-        // Flip dealer card on screen
+        _cpuDealer.FlipHiddenCard();
+        // Flip Dealer Card On Screen
+        _dealerHiddenCard.GetComponent<Image>().sprite = _cpuDealer.HiddenCard.CardSprite;
         // Hit or stay
     }
 
@@ -88,12 +90,13 @@ public class GameController : MonoBehaviour
     private void SpawnInitialHands()
     {
         SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
-        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
+        // Assign first spawned dealer card to variable for revealing
+        _dealerHiddenCard = SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
         SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
         SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
     }
 
-    private void SpawnCard(Card cardOnScreen, ref int cardCount, IPlayer activePlayer)
+    private GameObject SpawnCard(Card cardOnScreen, ref int cardCount, IPlayer activePlayer)
     {
         // Where to spawn
         var spawnZone = activePlayer switch
@@ -103,11 +106,12 @@ public class GameController : MonoBehaviour
             _ => null
         };
 
-        if (spawnZone == null) return;
+        if (spawnZone == null) return null;
         // What to spawn
         var cardToSpawn = Instantiate(_cardPrefab, spawnZone[cardCount]);
         cardToSpawn.GetComponent<Image>().sprite = cardOnScreen.CardSprite;
         cardCount++;
+        return cardToSpawn;
     }
 
     private void ActivatePlayerButtons()

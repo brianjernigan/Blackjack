@@ -6,14 +6,17 @@ using UnityEngine;
 
 public class Dealer : IPlayer
 {
-    private Deck GameDeck { get; }
-    public Card FlippedCard { get; private set; }
     public bool IsActive { get; set; }
     public Hand PlayerHand { get; set; } = new();
     
+    private Deck GameDeck { get; }
+    public Card HiddenCard { get; set; }
+    
+    // Constructor
     public Dealer(Deck gameDeck)
     {
         GameDeck = gameDeck;
+        IsActive = false;
     }
     
     public void Hit(HitDelegate hit)
@@ -55,7 +58,12 @@ public class Dealer : IPlayer
         }
 
         // Hide dealer's first drawn card
-        FlippedCard = PlayerHand.CardsInHand[0];
-        FlippedCard.FlipCard();
+        HiddenCard = PlayerHand.CardsInHand[0];
+        FlipHiddenCard();
+    }
+
+    public void FlipHiddenCard()
+    {
+        HiddenCard.IsHidden = !HiddenCard.IsHidden;
     }
 }
