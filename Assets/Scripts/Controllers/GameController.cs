@@ -62,7 +62,7 @@ public class GameController : MonoBehaviour
         var cannotHit = _numCardsInHumanHand >= MaxNumberOfCardsInHand || _humanPlayer.PlayerHand.HasBusted ||
                         _humanPlayer.PlayerHand.HasBlackjack || _humanPlayer.PlayerHand.HasTwentyOne;
         if (cannotHit) return;
-        _humanPlayer.Hit(_cpuDealer);
+        _humanPlayer.Hit(_cpuDealer.DealCard);
         SpawnAdditionalHumanCards();
     }
 

@@ -16,10 +16,9 @@ public class Dealer : IPlayer
         GameDeck = gameDeck;
     }
     
-    public void Hit(Dealer dealer)
+    public void Hit(HitDelegate hit)
     {
-        // dealer = this
-        DealCard(this);
+        hit(this);
     }
 
     public void Stay()
@@ -31,7 +30,7 @@ public class Dealer : IPlayer
     {
         if (!GameDeck.CardsInDeck.Any())
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("The deck is empty.");
         }
 
         var topCard = GameDeck.CardsInDeck[0];
@@ -42,7 +41,7 @@ public class Dealer : IPlayer
     public void DealCard(IPlayer activePlayer)
     {
         var topCard = DrawCardFromDeck();
-        activePlayer.PlayerHand.CardsInHand.Add(topCard);
+        activePlayer.PlayerHand.AddCardToHand(topCard);
     }
     
     public void DealInitialHands(List<IPlayer> activePlayers)

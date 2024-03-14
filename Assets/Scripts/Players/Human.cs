@@ -8,9 +8,9 @@ public class Human : IPlayer
    public bool IsActive { get; set; }
    public Hand PlayerHand { get; set; } = new();
    
-   public void Hit(Dealer dealer)
+   public void Hit(HitDelegate hit)
    {
-      dealer.DealCard(this);
+      hit(this);
    }
    
    public void Stay()
