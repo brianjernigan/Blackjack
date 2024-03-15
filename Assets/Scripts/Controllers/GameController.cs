@@ -100,14 +100,15 @@ public class GameController : MonoBehaviour
 
     private void SpawnAdditionalCards(IPlayer activePlayer)
     {
-        if (activePlayer is Human)
+        if (activePlayer.PlayerHand.CardsInHand.Count >= MaxNumberOfCardsInHand) return;
+        switch (activePlayer)
         {
-            if (_numCardsInHumanHand >= MaxNumberOfCardsInHand) return;
-            SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
-        } else if (activePlayer is Dealer)
-        {
-            if (_numCardsInDealerHand >= MaxNumberOfCardsInHand) return;
-            SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
+            case Human:
+                SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
+                break;
+            case Dealer:
+                SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
+                break;
         }
     }
 
