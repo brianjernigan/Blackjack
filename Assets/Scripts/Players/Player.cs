@@ -6,11 +6,22 @@ public abstract class Player
 {
     private const int TwentyOne = 21;
     public bool IsActive { get; set; }
-    public Hand PlayerHand { get; set; } = new();
+    protected Hand PlayerHand { get; set; } = new();
+    protected GameController GameController;
     
-    public bool HasBusted => PlayerHand.HandScore > TwentyOne;
-    public bool HasBlackjack => PlayerHand.HandScore == TwentyOne && PlayerHand.CardsInHand.Count == 2;
-    public bool HasTwentyOne => PlayerHand.HandScore == TwentyOne;
+    public bool HasBusted => PlayerHand.CalculateHandScore() > TwentyOne;
+    public bool HasBlackjack => PlayerHand.CalculateHandScore() == TwentyOne && PlayerHand.HasTwoCards();
+    public bool HasTwentyOne => PlayerHand.CalculateHandScore() == TwentyOne;
+
+    public int PlayerHandScore => PlayerHand.CalculateHandScore();
+
+    public int NumCardsInHand => PlayerHand.CardsInHand.Count;
 
     public abstract void Hit();
+
+    public void Stay()
+    {
+        IsActive = false;
+    }
 }
+

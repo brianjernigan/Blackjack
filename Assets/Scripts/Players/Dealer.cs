@@ -8,18 +8,13 @@ public class Dealer : Player
 {
     private Deck GameDeck { get; }
     public Card HiddenCard { get; private set; }
-    
-    // Constructor
-    public Dealer(Deck gameDeck)
-    {
-        GameDeck = gameDeck;
-        IsActive = false;
-    }
 
-    public override void Hit()
+    // Constructor
+    public Dealer(Deck gameDeck, GameController gameController)
     {
-        var topCard = DrawCardFromDeck();
-        PlayerHand.AddCardToHand(topCard);
+        IsActive = false;
+        GameDeck = gameDeck;
+        GameController = gameController;
     }
 
     public Card DrawCardFromDeck()
@@ -33,7 +28,23 @@ public class Dealer : Player
         GameDeck.CardsInDeck.RemoveAt(0);
         return topCard;
     }
-    
+
+    public override void Hit()
+    {
+        var topCard = DrawCardFromDeck();
+        PlayerHand.AddCardToHand(topCard);
+        if (NumCardsInHand == 1)
+        {
+            HiddenCard = topCard;
+            FlipHiddenCard();
+            GameController._dealerHiddenCard = GameController.SpawnCard(PlayerHand.CardsInHand[NumCardsInHand - 1], NumCardsInHand - 1, this);
+        }
+        else
+        {
+            GameController.SpawnCard(PlayerHand.CardsInHand[NumCardsInHand - 1], NumCardsInHand - 1, this);
+        }
+    }
+
     public void DealInitialHands(List<Player> activePlayers)
     {
         for (var i = 0; i < 2; i++)
@@ -43,10 +54,6 @@ public class Dealer : Player
                 player.Hit();
             }
         }
-
-        // Hide dealer's first drawn card
-        HiddenCard = PlayerHand.CardsInHand[0];
-        FlipHiddenCard();
     }
 
     public void FlipHiddenCard()

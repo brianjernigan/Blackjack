@@ -29,17 +29,14 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform[] _dealerCardZones;
     [SerializeField] private GameObject _cardPrefab;
     [SerializeField] private GameObject _dividerBar;
-    private GameObject _dealerHiddenCard;
+    public GameObject _dealerHiddenCard;
 
     private const int MaxNumberOfCardsInHand = 11;
     
-    private int _numCardsInHumanHand;
-    private int _numCardsInDealerHand;
-    
     private void InitializePlayers()
     {
-        _cpuDealer = new Dealer(_gameDeck);
-        _humanPlayer = new Human(_cpuDealer);
+        _cpuDealer = new Dealer(_gameDeck, this);
+        _humanPlayer = new Human(_cpuDealer, this);
         _playerList.Add(_humanPlayer);
         _playerList.Add(_cpuDealer);
     }
@@ -53,18 +50,16 @@ public class GameController : MonoBehaviour
     public void OnClickDealButton()
     {
         _cpuDealer.DealInitialHands(_playerList);
-        SpawnInitialHands();
         ActivatePlayerActionButtons();
         _humanPlayer.IsActive = true;
     }
 
     public void OnClickHitButton()
     {
-        var cannotHit = _numCardsInHumanHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
+        var cannotHit = _humanPlayer.NumCardsInHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
                         _humanPlayer.HasBlackjack || _humanPlayer.HasTwentyOne;
         if (cannotHit) return;
         _humanPlayer.Hit();
-        SpawnAdditionalCards(_humanPlayer);
     }
 
     public void OnClickStayButton()
@@ -78,7 +73,7 @@ public class GameController : MonoBehaviour
     private void SwitchTurns()
     {
         DeactivatePlayerActionButtons();
-        _humanPlayer.IsActive = false;
+        _humanPlayer.Stay();
         _cpuDealer.IsActive = true;
     }
 
@@ -90,38 +85,15 @@ public class GameController : MonoBehaviour
 
     private IEnumerator CpuTurn()
     {
-        while (_cpuDealer.PlayerHand.HandScore < 17)
+        while (_cpuDealer.PlayerHandScore < 17)
         {
             yield return new WaitForSeconds(2.0f);
             _cpuDealer.Hit();
-            SpawnAdditionalCards(_cpuDealer);
         }
+        _cpuDealer.Stay();
     }
 
-    private void SpawnAdditionalCards(Player activePlayer)
-    {
-        if (activePlayer.PlayerHand.CardsInHand.Count >= MaxNumberOfCardsInHand) return;
-        switch (activePlayer)
-        {
-            case Human:
-                SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
-                break;
-            case Dealer:
-                SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
-                break;
-        }
-    }
-
-    private void SpawnInitialHands()
-    {
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
-        // Assign first spawned dealer card to variable for revealing
-        _dealerHiddenCard = SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
-        SpawnCard(_humanPlayer.PlayerHand.CardsInHand[_numCardsInHumanHand], ref _numCardsInHumanHand, _humanPlayer);
-        SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
-    }
-
-    private GameObject SpawnCard(Card cardOnScreen, ref int cardCount, Player activePlayer)
+    public GameObject SpawnCard(Card cardOnScreen, int cardCount, Player activePlayer)
     {
         // Where to spawn
         var spawnZone = activePlayer switch
@@ -135,7 +107,6 @@ public class GameController : MonoBehaviour
         // What to spawn
         var cardToSpawn = Instantiate(_cardPrefab, spawnZone[cardCount]);
         cardToSpawn.GetComponent<Image>().sprite = cardOnScreen.CardSprite;
-        cardCount++;
         return cardToSpawn;
     }
 

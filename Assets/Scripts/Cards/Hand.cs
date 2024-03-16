@@ -7,9 +7,8 @@ using UnityEngine;
 public class Hand
 {
     public List<Card> CardsInHand { get; set; } = new();
-    public int HandScore => CalculateHandScore();
 
-    private int CalculateHandScore()
+    public int CalculateHandScore()
     {
         var score = CardsInHand.Sum(card => card.CardValue);
         var elevenCount = CountAces();
@@ -30,5 +29,10 @@ public class Hand
     public void AddCardToHand(Card cardToAdd)
     {
         CardsInHand.Add(cardToAdd);
+    }
+
+    public bool HasTwoCards()
+    {
+        return CardsInHand.Count == 2;
     }
 }
