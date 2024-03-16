@@ -14,6 +14,16 @@ public abstract class Player
     {
         OnHit?.Invoke(this, card);
     }
+
+    public event Action<Player> OnBusted;
+
+    protected void CheckForBust()
+    {
+        if (HasBusted)
+        {
+            OnBusted?.Invoke(this);
+        }
+    }
     
     public bool HasBusted => PlayerHand.CalculateHandScore() > TwentyOne;
     public bool HasBlackjack => PlayerHand.CalculateHandScore() == TwentyOne && PlayerHand.HasTwoCards();
@@ -24,6 +34,10 @@ public abstract class Player
     public int NumCardsInHand => PlayerHand.CardsInHand.Count;
 
     public abstract void Hit();
-    public abstract void Stay();
+
+    public virtual void Stay()
+    {
+        IsActive = false;
+    }
 }
 

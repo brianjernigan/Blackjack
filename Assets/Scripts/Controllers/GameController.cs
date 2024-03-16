@@ -38,25 +38,120 @@ public class GameController : MonoBehaviour
     private GameObject DealerHiddenCard { get; set; }
 
     private const int MaxNumberOfCardsInHand = 11;
+
+    private GameState _currentState;
     
+    private void Start()
+    {
+        SetGameState(GameState.Initializing);
+    }
+    
+    private void OnDestroy()
+    {
+        UnsubscribeToHumanEvents();
+        UnsubscribeToDealerEvents();
+    }
+    
+    private void SetGameState(GameState newState)
+    {
+        _currentState = newState;
+        HandleGameStateChange();
+    }
+
+    private void HandleGameStateChange()
+    {
+        switch (_currentState)
+        {
+            case GameState.Initializing:
+                InitializeGame();
+                break;
+            case GameState.Dealing:
+                _cpuDealer.DealInitialHands(_playerList);
+                ActivatePlayerActionButtons();
+                _humanPlayer.IsActive = true;
+                break;
+            case GameState.PlayerTurn:
+                // TODO
+                break;
+            case GameState.DealerTurn:
+                // TODO
+                break;
+            case GameState.RoundOver:
+                // TODO
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private void InitializeGame()
+    {
+        _gameDeck = new Deck(_allCards);
+        InitializePlayers();
+        AddPlayersToPlayerList();
+        SubscribeToHumanEvents();
+        SubscribeToDealerEvents();
+    }
+
     private void InitializePlayers()
     {
         _cpuDealer = new Dealer(_gameDeck);
         _humanPlayer = new Human(_cpuDealer);
+    }
+
+    private void AddPlayersToPlayerList()
+    {
         _playerList.Add(_humanPlayer);
         _playerList.Add(_cpuDealer);
-        _humanPlayer.OnHit += HandleHit;
-        _cpuDealer.OnHit += HandleHit;
-        _humanPlayer.OnStay += HandleHumanStay;
     }
-    
-    private void Start()
-    {
-        _gameDeck = new Deck(_allCards);
-        InitializePlayers();
-    }
-    
 
+    private void SubscribeToHumanEvents()
+    {
+        _humanPlayer.OnHit += HandleHit;
+        _humanPlayer.OnStay += HandleHumanStay;
+        _humanPlayer.OnBusted += HandleBust;
+    }
+
+    private void UnsubscribeToHumanEvents()
+    {
+        _humanPlayer.OnHit -= HandleHit;
+        _humanPlayer.OnStay -= HandleHumanStay;
+        _humanPlayer.OnBusted -= HandleBust;
+    }
+
+    private void SubscribeToDealerEvents()
+    {
+        _cpuDealer.OnHit += HandleHit;
+    }
+
+    private void UnsubscribeToDealerEvents()
+    {
+        _cpuDealer.OnHit -= HandleHit;
+    }
+
+    public void OnClickDealButton()
+    {
+        SetGameState(GameState.Dealing);
+    }
+    
+    public void OnClickHitButton()
+    {
+        SetGameState(GameState.PlayerTurn);
+        var cannotHit = _humanPlayer.NumCardsInHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
+                        _humanPlayer.HasBlackjack || _humanPlayer.HasTwentyOne;
+        if (cannotHit) return;
+        _humanPlayer.Hit();
+        CheckForBustOr21();
+    }
+
+    public void OnClickStayButton()
+    {
+        SetGameState(GameState.DealerTurn);
+        _humanPlayer.Stay();
+        StartCpuTurn();
+        _cpuDealer.Stay();
+    }
+    
     private void HandleHit(Player player, Card card)
     {
         if (player is Dealer && player.NumCardsInHand == 1)
@@ -70,36 +165,16 @@ public class GameController : MonoBehaviour
         UpdateScoreText(player);
     }
 
+    private void HandleBust(Player player)
+    {
+        if (player is not Human) return;
+        player.Stay();
+        StartCoroutine(CpuTurn());
+    }
+
     private void HandleHumanStay()
     {
         DeactivatePlayerActionButtons();
-    }
-
-    private void OnDestroy()
-    {
-        _humanPlayer.OnHit -= HandleHit;
-        _cpuDealer.OnHit -= HandleHit;
-    }
-
-    private void Update()
-    {
-        
-    }
-
-    public void OnClickDealButton()
-    {
-        _cpuDealer.DealInitialHands(_playerList);
-        ActivatePlayerActionButtons();
-        _humanPlayer.IsActive = true;
-    }
-
-    public void OnClickHitButton()
-    {
-        var cannotHit = _humanPlayer.NumCardsInHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
-                        _humanPlayer.HasBlackjack || _humanPlayer.HasTwentyOne;
-        if (cannotHit) return;
-        _humanPlayer.Hit();
-        CheckForBustOr21();
     }
 
     private void CheckForBustOr21()
@@ -109,15 +184,12 @@ public class GameController : MonoBehaviour
             _humanPlayer.Stay();
         }
     }
-
-    public void OnClickStayButton()
+    
+    private void StartCpuTurn()
     {
-        _humanPlayer.Stay();
         _cpuDealer.IsActive = true;
         RevealDealerCard();
-        // CPU evaluation and actions
         StartCoroutine(CpuTurn());
-        _cpuDealer.Stay();
     }
 
     private void RevealDealerCard()
@@ -162,7 +234,7 @@ public class GameController : MonoBehaviour
         _dividerBar.SetActive(true);
     }
 
-    public void DeactivatePlayerActionButtons()
+    private void DeactivatePlayerActionButtons()
     {
         _hitButton.gameObject.SetActive(false);
         _stayButton.gameObject.SetActive(false);

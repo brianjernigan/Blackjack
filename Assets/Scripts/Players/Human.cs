@@ -21,8 +21,7 @@ public class Human : Player
         PlayerHand.AddCardToHand(topCard);
 
         RaiseOnHit(topCard);
-        // GameController.SpawnCard(PlayerHand.CardsInHand[NumCardsInHand - 1], NumCardsInHand - 1, this);
-        // GameController.UpdateScoreText(this);
+        CheckForBust();
     }
 
     public override void Stay()

@@ -40,11 +40,7 @@ public class Dealer : Player
         }
 
         RaiseOnHit(topCard);
-    }
-
-    public override void Stay()
-    {
-        IsActive = false;
+        CheckForBust();
     }
 
     public void DealInitialHands(List<Player> activePlayers)
