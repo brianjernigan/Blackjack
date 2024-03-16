@@ -6,23 +6,14 @@ using UnityEngine;
 
 public class Hand
 {
-    private const int BustingPoint = 21;
     public List<Card> CardsInHand { get; set; } = new();
     public int HandScore => CalculateHandScore();
-    public bool HasBusted => HandScore > BustingPoint;
-    public bool HasBlackjack => HandScore == BustingPoint && CardsInHand.Count == 2;
-    public bool HasTwentyOne => HandScore == BustingPoint;
-
-    public void AddCardToHand(Card cardToAdd)
-    {
-        CardsInHand.Add(cardToAdd);
-    }
 
     private int CalculateHandScore()
     {
         var score = CardsInHand.Sum(card => card.CardValue);
         var elevenCount = CountAces();
-        while (elevenCount > 0 && score > BustingPoint)
+        while (elevenCount > 0 && score > 21)
         {
             score -= 10;
             elevenCount--;
@@ -34,5 +25,10 @@ public class Hand
     private int CountAces()
     {
         return CardsInHand.Count(card => card.CardName.Contains("Ace"));
+    }
+
+    public void AddCardToHand(Card cardToAdd)
+    {
+        CardsInHand.Add(cardToAdd);
     }
 }

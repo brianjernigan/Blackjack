@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
     [Header("Players")]
     private Human _humanPlayer;
     private Dealer _cpuDealer;
-    private readonly List<IPlayer> _playerList = new();
+    private readonly List<Player> _playerList = new();
 
     [Header("On-Screen Elements - Dealing")]
     [SerializeField] private Transform[] _humanCardZones;
@@ -38,8 +38,8 @@ public class GameController : MonoBehaviour
     
     private void InitializePlayers()
     {
-        _humanPlayer = new Human();
         _cpuDealer = new Dealer(_gameDeck);
+        _humanPlayer = new Human(_cpuDealer);
         _playerList.Add(_humanPlayer);
         _playerList.Add(_cpuDealer);
     }
@@ -60,10 +60,10 @@ public class GameController : MonoBehaviour
 
     public void OnClickHitButton()
     {
-        var cannotHit = _numCardsInHumanHand >= MaxNumberOfCardsInHand || _humanPlayer.PlayerHand.HasBusted ||
-                        _humanPlayer.PlayerHand.HasBlackjack || _humanPlayer.PlayerHand.HasTwentyOne;
+        var cannotHit = _numCardsInHumanHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
+                        _humanPlayer.HasBlackjack || _humanPlayer.HasTwentyOne;
         if (cannotHit) return;
-        _humanPlayer.Hit(_cpuDealer.DealCard);
+        _humanPlayer.Hit();
         SpawnAdditionalCards(_humanPlayer);
     }
 
@@ -93,12 +93,12 @@ public class GameController : MonoBehaviour
         while (_cpuDealer.PlayerHand.HandScore < 17)
         {
             yield return new WaitForSeconds(2.0f);
-            _cpuDealer.Hit(_cpuDealer.DealCard);
+            _cpuDealer.Hit();
             SpawnAdditionalCards(_cpuDealer);
         }
     }
 
-    private void SpawnAdditionalCards(IPlayer activePlayer)
+    private void SpawnAdditionalCards(Player activePlayer)
     {
         if (activePlayer.PlayerHand.CardsInHand.Count >= MaxNumberOfCardsInHand) return;
         switch (activePlayer)
@@ -121,7 +121,7 @@ public class GameController : MonoBehaviour
         SpawnCard(_cpuDealer.PlayerHand.CardsInHand[_numCardsInDealerHand], ref _numCardsInDealerHand, _cpuDealer);
     }
 
-    private GameObject SpawnCard(Card cardOnScreen, ref int cardCount, IPlayer activePlayer)
+    private GameObject SpawnCard(Card cardOnScreen, ref int cardCount, Player activePlayer)
     {
         // Where to spawn
         var spawnZone = activePlayer switch

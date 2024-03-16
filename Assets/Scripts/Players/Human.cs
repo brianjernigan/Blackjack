@@ -3,13 +3,19 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class Human : IPlayer
+public class Human : Player
 {
-   public bool IsActive { get; set; } = true;
-   public Hand PlayerHand { get; set; } = new();
+    private Dealer GameDealer { get; set; }
 
-   public void Hit(HitDelegate hit)
-   {
-      hit(this);
-   }
+    public Human(Dealer dealer)
+    {
+        IsActive = true;
+        GameDealer = dealer;
+    }
+
+    public override void Hit()
+    {
+        var topCard = GameDealer.DrawCardFromDeck();
+        PlayerHand.AddCardToHand(topCard);
+    }
 }
