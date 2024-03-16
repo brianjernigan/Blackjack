@@ -65,19 +65,16 @@ public class GameController : MonoBehaviour
             case GameState.Initializing:
                 InitializeGame();
                 break;
-            case GameState.Dealing:
+            case GameState.PlayerTurn:
                 _cpuDealer.DealInitialHands(_playerList);
                 ActivatePlayerActionButtons();
                 _humanPlayer.IsActive = true;
                 break;
-            case GameState.PlayerTurn:
-                // TODO
-                break;
             case GameState.DealerTurn:
-                // TODO
+                StartDealerTurn();
                 break;
             case GameState.RoundOver:
-                // TODO
+                DetermineGameOutcome();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -131,25 +128,32 @@ public class GameController : MonoBehaviour
 
     public void OnClickDealButton()
     {
-        SetGameState(GameState.Dealing);
+        SetGameState(GameState.PlayerTurn);
     }
     
     public void OnClickHitButton()
     {
-        SetGameState(GameState.PlayerTurn);
         var cannotHit = _humanPlayer.NumCardsInHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
                         _humanPlayer.HasBlackjack || _humanPlayer.HasTwentyOne;
         if (cannotHit) return;
         _humanPlayer.Hit();
-        CheckForBustOr21();
     }
 
+    
     public void OnClickStayButton()
     {
         SetGameState(GameState.DealerTurn);
+    }
+    
+    private void StartDealerTurn()
+    {
         _humanPlayer.Stay();
         StartCpuTurn();
         _cpuDealer.Stay();
+    }
+    private void DetermineGameOutcome()
+    {
+        throw new NotImplementedException();
     }
     
     private void HandleHit(Player player, Card card)
@@ -175,14 +179,6 @@ public class GameController : MonoBehaviour
     private void HandleHumanStay()
     {
         DeactivatePlayerActionButtons();
-    }
-
-    private void CheckForBustOr21()
-    {
-        if (_humanPlayer.HasBusted || _humanPlayer.HasTwentyOne)
-        {
-            _humanPlayer.Stay();
-        }
     }
     
     private void StartCpuTurn()

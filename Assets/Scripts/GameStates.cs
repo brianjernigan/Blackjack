@@ -5,7 +5,6 @@ using UnityEngine;
 public enum GameState
 {
     Initializing,
-    Dealing,
     PlayerTurn,
     DealerTurn,
     RoundOver
