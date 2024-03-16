@@ -10,11 +10,10 @@ public class Dealer : Player
     public Card HiddenCard { get; private set; }
 
     // Constructor
-    public Dealer(Deck gameDeck, GameController gameController)
+    public Dealer(Deck gameDeck)
     {
         IsActive = false;
         GameDeck = gameDeck;
-        GameController = gameController;
     }
 
     public Card DrawCardFromDeck()
@@ -33,16 +32,19 @@ public class Dealer : Player
     {
         var topCard = DrawCardFromDeck();
         PlayerHand.AddCardToHand(topCard);
+        
         if (NumCardsInHand == 1)
         {
             HiddenCard = topCard;
             FlipHiddenCard();
-            GameController._dealerHiddenCard = GameController.SpawnCard(PlayerHand.CardsInHand[NumCardsInHand - 1], NumCardsInHand - 1, this);
         }
-        else
-        {
-            GameController.SpawnCard(PlayerHand.CardsInHand[NumCardsInHand - 1], NumCardsInHand - 1, this);
-        }
+
+        RaiseOnHit(topCard);
+    }
+
+    public override void Stay()
+    {
+        IsActive = false;
     }
 
     public void DealInitialHands(List<Player> activePlayers)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -29,22 +30,60 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform[] _dealerCardZones;
     [SerializeField] private GameObject _cardPrefab;
     [SerializeField] private GameObject _dividerBar;
-    public GameObject _dealerHiddenCard;
+
+    [Header("Scores")] 
+    [SerializeField] private TMP_Text _humanScoreText;
+    [SerializeField] private TMP_Text _dealerScoreText;
+
+    private GameObject DealerHiddenCard { get; set; }
 
     private const int MaxNumberOfCardsInHand = 11;
     
     private void InitializePlayers()
     {
-        _cpuDealer = new Dealer(_gameDeck, this);
-        _humanPlayer = new Human(_cpuDealer, this);
+        _cpuDealer = new Dealer(_gameDeck);
+        _humanPlayer = new Human(_cpuDealer);
         _playerList.Add(_humanPlayer);
         _playerList.Add(_cpuDealer);
+        _humanPlayer.OnHit += HandleHit;
+        _cpuDealer.OnHit += HandleHit;
+        _humanPlayer.OnStay += HandleHumanStay;
     }
     
     private void Start()
     {
         _gameDeck = new Deck(_allCards);
         InitializePlayers();
+    }
+    
+
+    private void HandleHit(Player player, Card card)
+    {
+        if (player is Dealer && player.NumCardsInHand == 1)
+        {
+            DealerHiddenCard = SpawnCard(card, player.NumCardsInHand - 1, player);
+        }
+        else
+        {
+            SpawnCard(card, player.NumCardsInHand - 1, player);
+        }
+        UpdateScoreText(player);
+    }
+
+    private void HandleHumanStay()
+    {
+        DeactivatePlayerActionButtons();
+    }
+
+    private void OnDestroy()
+    {
+        _humanPlayer.OnHit -= HandleHit;
+        _cpuDealer.OnHit -= HandleHit;
+    }
+
+    private void Update()
+    {
+        
     }
 
     public void OnClickDealButton()
@@ -60,40 +99,45 @@ public class GameController : MonoBehaviour
                         _humanPlayer.HasBlackjack || _humanPlayer.HasTwentyOne;
         if (cannotHit) return;
         _humanPlayer.Hit();
+        CheckForBustOr21();
+    }
+
+    private void CheckForBustOr21()
+    {
+        if (_humanPlayer.HasBusted || _humanPlayer.HasTwentyOne)
+        {
+            _humanPlayer.Stay();
+        }
     }
 
     public void OnClickStayButton()
     {
-        SwitchTurns();
+        _humanPlayer.Stay();
+        _cpuDealer.IsActive = true;
         RevealDealerCard();
         // CPU evaluation and actions
         StartCoroutine(CpuTurn());
-    }
-
-    private void SwitchTurns()
-    {
-        DeactivatePlayerActionButtons();
-        _humanPlayer.Stay();
-        _cpuDealer.IsActive = true;
+        _cpuDealer.Stay();
     }
 
     private void RevealDealerCard()
     {
         _cpuDealer.FlipHiddenCard();
-        _dealerHiddenCard.GetComponent<Image>().sprite = _cpuDealer.HiddenCard.CardSprite;
+        DealerHiddenCard.GetComponent<Image>().sprite = _cpuDealer.HiddenCard.CardSprite;
     }
 
     private IEnumerator CpuTurn()
     {
-        while (_cpuDealer.PlayerHandScore < 17)
+        while (_cpuDealer.Score < 17)
         {
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(1.5f);
             _cpuDealer.Hit();
         }
-        _cpuDealer.Stay();
+
+        yield return null;
     }
 
-    public GameObject SpawnCard(Card cardOnScreen, int cardCount, Player activePlayer)
+    private GameObject SpawnCard(Card cardOnScreen, int cardCount, Player activePlayer)
     {
         // Where to spawn
         var spawnZone = activePlayer switch
@@ -118,10 +162,34 @@ public class GameController : MonoBehaviour
         _dividerBar.SetActive(true);
     }
 
-    private void DeactivatePlayerActionButtons()
+    public void DeactivatePlayerActionButtons()
     {
         _hitButton.gameObject.SetActive(false);
         _stayButton.gameObject.SetActive(false);
+    }
+
+    private void UpdateScoreText(Player activePlayer)
+    {
+        var playerScoreText = activePlayer switch
+        {
+            Human => _humanScoreText,
+            Dealer => _dealerScoreText,
+            _ => null
+        };
+
+        if (playerScoreText is null) return;
+        
+        if (activePlayer.HasBlackjack)
+        {
+            playerScoreText.text = "Blackjack!";
+        } else if (activePlayer.HasBusted)
+        {
+            playerScoreText.text = "Busted!";
+        }
+        else
+        {
+            playerScoreText.text = activePlayer.Score.ToString();
+        }
     }
 
     public void OnClickQuitButton()
