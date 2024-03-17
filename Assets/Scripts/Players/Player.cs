@@ -16,13 +16,19 @@ public abstract class Player
     }
 
     public event Action<Player> OnBusted;
-
     protected void CheckForBust()
     {
         if (HasBusted)
         {
             OnBusted?.Invoke(this);
         }
+    }
+
+    public event Action OnStay;
+
+    private void RaiseOnStay()
+    {
+        OnStay?.Invoke();
     }
     
     public bool HasBusted => PlayerHand.CalculateHandScore() > TwentyOne;
@@ -35,9 +41,10 @@ public abstract class Player
 
     public abstract void Hit();
 
-    public virtual void Stay()
+    public void Stay()
     {
         IsActive = false;
+        RaiseOnStay();
     }
 }
 

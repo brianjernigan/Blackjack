@@ -7,11 +7,8 @@ public class Human : Player
 {
     private Dealer GameDealer { get; set; }
 
-    public event Action OnStay;
-
     public Human(Dealer dealer)
     {
-        IsActive = true;
         GameDealer = dealer;
     }
 
@@ -22,11 +19,5 @@ public class Human : Player
 
         RaiseOnHit(topCard);
         CheckForBust();
-    }
-
-    public override void Stay()
-    {
-        IsActive = false;
-        OnStay?.Invoke();
     }
 }

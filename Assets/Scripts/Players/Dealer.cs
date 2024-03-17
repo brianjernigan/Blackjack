@@ -12,7 +12,6 @@ public class Dealer : Player
     // Constructor
     public Dealer(Deck gameDeck)
     {
-        IsActive = false;
         GameDeck = gameDeck;
     }
 

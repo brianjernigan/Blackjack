@@ -46,12 +46,6 @@ public class GameController : MonoBehaviour
         SetGameState(GameState.Initializing);
     }
     
-    private void OnDestroy()
-    {
-        UnsubscribeToHumanEvents();
-        UnsubscribeToDealerEvents();
-    }
-    
     private void SetGameState(GameState newState)
     {
         _currentState = newState;
@@ -65,10 +59,12 @@ public class GameController : MonoBehaviour
             case GameState.Initializing:
                 InitializeGame();
                 break;
-            case GameState.PlayerTurn:
+            case GameState.Dealing:
                 _cpuDealer.DealInitialHands(_playerList);
-                ActivatePlayerActionButtons();
-                _humanPlayer.IsActive = true;
+                SetGameState(GameState.PlayerTurn);
+                break;
+            case GameState.PlayerTurn:
+                StartHumanTurn();
                 break;
             case GameState.DealerTurn:
                 StartDealerTurn();
@@ -109,28 +105,17 @@ public class GameController : MonoBehaviour
         _humanPlayer.OnBusted += HandleBust;
     }
 
-    private void UnsubscribeToHumanEvents()
-    {
-        _humanPlayer.OnHit -= HandleHit;
-        _humanPlayer.OnStay -= HandleHumanStay;
-        _humanPlayer.OnBusted -= HandleBust;
-    }
-
     private void SubscribeToDealerEvents()
     {
         _cpuDealer.OnHit += HandleHit;
-    }
-
-    private void UnsubscribeToDealerEvents()
-    {
-        _cpuDealer.OnHit -= HandleHit;
+        _cpuDealer.OnStay += HandleCpuStay;
     }
 
     public void OnClickDealButton()
     {
-        SetGameState(GameState.PlayerTurn);
+        SetGameState(GameState.Dealing);
     }
-    
+
     public void OnClickHitButton()
     {
         var cannotHit = _humanPlayer.NumCardsInHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
@@ -138,22 +123,26 @@ public class GameController : MonoBehaviour
         if (cannotHit) return;
         _humanPlayer.Hit();
     }
-
     
     public void OnClickStayButton()
     {
         SetGameState(GameState.DealerTurn);
+    }
+
+    private void StartHumanTurn()
+    {
+        _humanPlayer.IsActive = true;
+        ActivatePlayerActionButtons();
     }
     
     private void StartDealerTurn()
     {
         _humanPlayer.Stay();
         StartCpuTurn();
-        _cpuDealer.Stay();
     }
     private void DetermineGameOutcome()
     {
-        throw new NotImplementedException();
+        Debug.Log("game over");
     }
     
     private void HandleHit(Player player, Card card)
@@ -171,14 +160,19 @@ public class GameController : MonoBehaviour
 
     private void HandleBust(Player player)
     {
-        if (player is not Human) return;
-        player.Stay();
-        StartCoroutine(CpuTurn());
+        // if (player is not Human) return;
+        // player.Stay();
+        // StartCoroutine(CpuTurn());
     }
 
     private void HandleHumanStay()
     {
         DeactivatePlayerActionButtons();
+    }
+
+    private void HandleCpuStay()
+    {
+        SetGameState(GameState.RoundOver);
     }
     
     private void StartCpuTurn()
@@ -202,6 +196,7 @@ public class GameController : MonoBehaviour
             _cpuDealer.Hit();
         }
 
+        _cpuDealer.Stay();
         yield return null;
     }
 
@@ -258,6 +253,24 @@ public class GameController : MonoBehaviour
         {
             playerScoreText.text = activePlayer.Score.ToString();
         }
+    }
+    
+    private void OnDestroy()
+    {
+        UnsubscribeToHumanEvents();
+        UnsubscribeToDealerEvents();
+    }
+    
+    private void UnsubscribeToHumanEvents()
+    {
+        _humanPlayer.OnHit -= HandleHit;
+        _humanPlayer.OnStay -= HandleHumanStay;
+        _humanPlayer.OnBusted -= HandleBust;
+    }
+    
+    private void UnsubscribeToDealerEvents()
+    {
+        _cpuDealer.OnHit -= HandleHit;
     }
 
     public void OnClickQuitButton()
