@@ -9,6 +9,19 @@ public class Dealer : Player
     private Deck GameDeck { get; }
     public Card HiddenCard { get; private set; }
 
+    public override int Score
+    {
+        get
+        {
+            if (HiddenCard.IsHidden)
+            {
+                return PlayerHand.CalculateHandScore() - HiddenCard.CardValue;
+            }
+
+            return PlayerHand.CalculateHandScore();
+        }
+    }
+
     // Constructor
     public Dealer(Deck gameDeck)
     {
@@ -40,6 +53,7 @@ public class Dealer : Player
 
         RaiseOnHit(topCard);
         CheckForBust();
+        CheckForBlackjack();
     }
 
     public void DealInitialHands(List<Player> activePlayers)

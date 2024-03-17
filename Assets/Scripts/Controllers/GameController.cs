@@ -103,12 +103,14 @@ public class GameController : MonoBehaviour
         _humanPlayer.OnHit += HandleHit;
         _humanPlayer.OnStay += HandleHumanStay;
         _humanPlayer.OnBusted += HandleBust;
+        _humanPlayer.OnBlackjack += HandleHumanBlackjack;
     }
 
     private void SubscribeToDealerEvents()
     {
         _cpuDealer.OnHit += HandleHit;
         _cpuDealer.OnStay += HandleCpuStay;
+        _cpuDealer.OnBlackjack += HandleCpuBlackjack;
     }
 
     public void OnClickDealButton()
@@ -142,7 +144,7 @@ public class GameController : MonoBehaviour
     }
     private void DetermineGameOutcome()
     {
-        Debug.Log("game over");
+        Debug.Log("win/loss");
     }
     
     private void HandleHit(Player player, Card card)
@@ -158,11 +160,9 @@ public class GameController : MonoBehaviour
         UpdateScoreText(player);
     }
 
-    private void HandleBust(Player player)
+    private void HandleBust()
     {
-        // if (player is not Human) return;
-        // player.Stay();
-        // StartCoroutine(CpuTurn());
+        SetGameState(GameState.RoundOver);
     }
 
     private void HandleHumanStay()
@@ -171,6 +171,16 @@ public class GameController : MonoBehaviour
     }
 
     private void HandleCpuStay()
+    {
+        SetGameState(GameState.RoundOver);
+    }
+
+    private void HandleHumanBlackjack()
+    {
+        SetGameState(GameState.DealerTurn);
+    }
+
+    private void HandleCpuBlackjack()
     {
         SetGameState(GameState.RoundOver);
     }
@@ -186,13 +196,14 @@ public class GameController : MonoBehaviour
     {
         _cpuDealer.FlipHiddenCard();
         DealerHiddenCard.GetComponent<Image>().sprite = _cpuDealer.HiddenCard.CardSprite;
+        UpdateScoreText(_cpuDealer);
     }
 
     private IEnumerator CpuTurn()
     {
         while (_cpuDealer.Score < 17)
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1.0f);
             _cpuDealer.Hit();
         }
 
@@ -266,11 +277,14 @@ public class GameController : MonoBehaviour
         _humanPlayer.OnHit -= HandleHit;
         _humanPlayer.OnStay -= HandleHumanStay;
         _humanPlayer.OnBusted -= HandleBust;
+        _humanPlayer.OnBlackjack -= HandleHumanBlackjack;
     }
     
     private void UnsubscribeToDealerEvents()
     {
         _cpuDealer.OnHit -= HandleHit;
+        _cpuDealer.OnStay -= HandleCpuStay;
+        _cpuDealer.OnBlackjack -= HandleCpuBlackjack;
     }
 
     public void OnClickQuitButton()

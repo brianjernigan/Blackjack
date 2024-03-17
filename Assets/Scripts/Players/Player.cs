@@ -15,27 +15,35 @@ public abstract class Player
         OnHit?.Invoke(this, card);
     }
 
-    public event Action<Player> OnBusted;
+    public event Action OnBusted;
     protected void CheckForBust()
     {
         if (HasBusted)
         {
-            OnBusted?.Invoke(this);
+            OnBusted?.Invoke();
         }
     }
 
     public event Action OnStay;
-
     private void RaiseOnStay()
     {
         OnStay?.Invoke();
+    }
+    
+    public event Action OnBlackjack;
+    protected void CheckForBlackjack()
+    {
+        if (HasBlackjack)
+        {
+            OnBlackjack?.Invoke();
+        }
     }
     
     public bool HasBusted => PlayerHand.CalculateHandScore() > TwentyOne;
     public bool HasBlackjack => PlayerHand.CalculateHandScore() == TwentyOne && PlayerHand.HasTwoCards();
     public bool HasTwentyOne => PlayerHand.CalculateHandScore() == TwentyOne;
 
-    public int Score => PlayerHand.CalculateHandScore();
+    public virtual int Score => PlayerHand.CalculateHandScore();
 
     public int NumCardsInHand => PlayerHand.CardsInHand.Count;
 
