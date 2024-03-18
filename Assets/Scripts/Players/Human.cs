@@ -16,8 +16,9 @@ public class Human : Player
     {
         var topCard = GameDealer.DrawCardFromDeck();
         PlayerHand.AddCardToHand(topCard);
-
+        
         RaiseOnHit(topCard);
+        if (!IsActive) return;
         CheckForBust();
         CheckForBlackjackOr21();
     }

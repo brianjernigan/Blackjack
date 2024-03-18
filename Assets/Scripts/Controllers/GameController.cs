@@ -62,7 +62,7 @@ public class GameController : MonoBehaviour
             case GameState.Dealing:
                 InitialDeal();
                 break;
-            case GameState.PlayerTurn:
+            case GameState.HumanTurn:
                 StartHumanTurn();
                 break;
             case GameState.DealerTurn:
@@ -122,7 +122,7 @@ public class GameController : MonoBehaviour
         _cpuDealer.DealInitialHands(_playerList);
         _dealButton.gameObject.SetActive(false);
         _dividerBar.SetActive(true);
-        SetGameState(GameState.PlayerTurn);
+        SetGameState(GameState.HumanTurn);
     }
 
     public void OnClickHitButton()
@@ -141,11 +141,7 @@ public class GameController : MonoBehaviour
     private void StartHumanTurn()
     {
         _humanPlayer.IsActive = true;
-        if (_humanPlayer.HasBlackjack)
-        { 
-            _humanPlayer.Stay();
-            return;
-        }
+        if (_humanPlayer.HasBlackjack) return;
         ActivatePlayerActionButtons();
     }
     
@@ -188,6 +184,11 @@ public class GameController : MonoBehaviour
     {
         _cpuDealer.IsActive = true;
         RevealDealerCard();
+        if (_humanPlayer.HasBlackjack && !_cpuDealer.HasBlackjack)
+        {
+            SetGameState(GameState.RoundOver);
+            return;
+        }
         StartCoroutine(DealerDecision());
     }
 

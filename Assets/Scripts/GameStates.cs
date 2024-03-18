@@ -6,7 +6,7 @@ public enum GameState
 {
     Initializing,
     Dealing,
-    PlayerTurn,
+    HumanTurn,
     DealerTurn,
     RoundOver
 }

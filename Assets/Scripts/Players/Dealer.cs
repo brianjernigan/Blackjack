@@ -78,6 +78,8 @@ public class Dealer : Player
         }
 
         RaiseOnHit(topCard);
+
+        if (!IsActive) return;
         CheckForBust();
         CheckForBlackjackOr21();
     }

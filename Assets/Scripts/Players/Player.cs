@@ -6,7 +6,19 @@ using UnityEngine;
 public abstract class Player
 {
     protected const int TwentyOne = 21;
-    public bool IsActive { get; set; }
+    private bool _isActive;
+    public bool IsActive
+    {
+        get => _isActive;
+        set
+        {
+            _isActive = value;
+            if (_isActive)
+            {
+                CheckForBlackjackOr21();
+            }
+        }
+}
     protected Hand PlayerHand { get; set; } = new();
 
     public event Action<Player, Card> OnHit;
@@ -29,7 +41,7 @@ public abstract class Player
     {
         OnStay?.Invoke();
     }
-    
+
     protected void CheckForBlackjackOr21()
     {
         if (HasBlackjack || HasTwentyOne)
