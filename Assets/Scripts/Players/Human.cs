@@ -19,6 +19,6 @@ public class Human : Player
 
         RaiseOnHit(topCard);
         CheckForBust();
-        CheckForBlackjack();
+        CheckForBlackjackOr21();
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class Player
 {
-    private const int TwentyOne = 21;
+    protected const int TwentyOne = 21;
     public bool IsActive { get; set; }
     protected Hand PlayerHand { get; set; } = new();
 
@@ -30,21 +30,19 @@ public abstract class Player
         OnStay?.Invoke();
     }
     
-    public event Action OnBlackjack;
-    protected void CheckForBlackjack()
+    public event Action OnBlackjackOr21;
+    protected void CheckForBlackjackOr21()
     {
-        if (HasBlackjack)
+        if (HasBlackjack || HasTwentyOne)
         {
-            OnBlackjack?.Invoke();
+            OnBlackjackOr21?.Invoke();
         }
     }
     
     public bool HasBusted => PlayerHand.CalculateHandScore() > TwentyOne;
-    public bool HasBlackjack => PlayerHand.CalculateHandScore() == TwentyOne && PlayerHand.HasTwoCards();
-    public bool HasTwentyOne => PlayerHand.CalculateHandScore() == TwentyOne;
-
+    public virtual bool HasBlackjack => PlayerHand.CalculateHandScore() == TwentyOne && PlayerHand.HasTwoCards();
+    public virtual bool HasTwentyOne => PlayerHand.CalculateHandScore() == TwentyOne;
     public virtual int Score => PlayerHand.CalculateHandScore();
-
     public int NumCardsInHand => PlayerHand.CardsInHand.Count;
 
     public abstract void Hit();

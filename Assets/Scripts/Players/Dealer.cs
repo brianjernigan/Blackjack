@@ -9,6 +9,32 @@ public class Dealer : Player
     private Deck GameDeck { get; }
     public Card HiddenCard { get; private set; }
 
+    public override bool HasBlackjack
+    {
+        get
+        {
+            if (HiddenCard.IsHidden)
+            {
+                return false;
+            }
+
+            return PlayerHand.CalculateHandScore() == TwentyOne && NumCardsInHand == 2;
+        }
+    }
+
+    public override bool HasTwentyOne
+    {
+        get
+        {
+            if (HiddenCard.IsHidden)
+            {
+                return false;
+            }
+
+            return PlayerHand.CalculateHandScore() == TwentyOne;
+        }
+    }
+
     public override int Score
     {
         get
@@ -53,7 +79,7 @@ public class Dealer : Player
 
         RaiseOnHit(topCard);
         CheckForBust();
-        CheckForBlackjack();
+        CheckForBlackjackOr21();
     }
 
     public void DealInitialHands(List<Player> activePlayers)

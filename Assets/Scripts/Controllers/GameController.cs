@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
@@ -102,15 +102,18 @@ public class GameController : MonoBehaviour
     {
         _humanPlayer.OnHit += HandleHit;
         _humanPlayer.OnStay += HandleHumanStay;
-        _humanPlayer.OnBusted += HandleBust;
-        _humanPlayer.OnBlackjack += HandleHumanBlackjack;
+        _humanPlayer.OnStay += DeactivatePlayerActionButtons;
+        _humanPlayer.OnBusted += HandleHumanBust;
+        _humanPlayer.OnBusted += DeactivatePlayerActionButtons;
+        _humanPlayer.OnBlackjackOr21 += HandleHumanStay;
+        _humanPlayer.OnBlackjackOr21 += DeactivatePlayerActionButtons;
     }
 
     private void SubscribeToDealerEvents()
     {
         _cpuDealer.OnHit += HandleHit;
         _cpuDealer.OnStay += HandleCpuStay;
-        _cpuDealer.OnBlackjack += HandleCpuBlackjack;
+        _cpuDealer.OnBlackjackOr21 += HandleCpuStay;
     }
 
     public void OnClickDealButton()
@@ -128,7 +131,7 @@ public class GameController : MonoBehaviour
     
     public void OnClickStayButton()
     {
-        SetGameState(GameState.DealerTurn);
+        _humanPlayer.Stay();
     }
 
     private void StartHumanTurn()
@@ -137,11 +140,6 @@ public class GameController : MonoBehaviour
         ActivatePlayerActionButtons();
     }
     
-    private void StartDealerTurn()
-    {
-        _humanPlayer.Stay();
-        StartCpuTurn();
-    }
     private void DetermineGameOutcome()
     {
         Debug.Log("win/loss");
@@ -160,36 +158,38 @@ public class GameController : MonoBehaviour
         UpdateScoreText(player);
     }
 
-    private void HandleBust()
+    private void HandleHumanBust()
     {
         SetGameState(GameState.RoundOver);
+        DeactivatePlayerActionButtons();
     }
 
     private void HandleHumanStay()
     {
-        DeactivatePlayerActionButtons();
+        SetGameState(GameState.DealerTurn);
     }
 
     private void HandleCpuStay()
     {
-        SetGameState(GameState.RoundOver);
-    }
-
-    private void HandleHumanBlackjack()
-    {
-        SetGameState(GameState.DealerTurn);
-    }
-
-    private void HandleCpuBlackjack()
-    {
+        StopCoroutine(DealerDecision());
         SetGameState(GameState.RoundOver);
     }
     
-    private void StartCpuTurn()
+    private void StartDealerTurn()
     {
         _cpuDealer.IsActive = true;
         RevealDealerCard();
-        StartCoroutine(CpuTurn());
+        
+        // Human wins on natural 21 if dealer does not have blackjack too
+        var onlyHumanHasBlackjack = _humanPlayer.HasBlackjack && !_cpuDealer.HasBlackjack;
+        if (onlyHumanHasBlackjack)
+        {
+            _cpuDealer.Stay();
+        }
+        else
+        {
+            StartCoroutine(DealerDecision());
+        }
     }
 
     private void RevealDealerCard()
@@ -199,16 +199,18 @@ public class GameController : MonoBehaviour
         UpdateScoreText(_cpuDealer);
     }
 
-    private IEnumerator CpuTurn()
+    private IEnumerator DealerDecision()
     {
         while (_cpuDealer.Score < 17)
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(1.5f);
             _cpuDealer.Hit();
         }
 
+        yield return new WaitForSeconds(1.5f);
+        // Already handled
+        if (_cpuDealer.HasBlackjack || _cpuDealer.HasTwentyOne) yield break;
         _cpuDealer.Stay();
-        yield return null;
     }
 
     private GameObject SpawnCard(Card cardOnScreen, int cardCount, Player activePlayer)
@@ -223,6 +225,7 @@ public class GameController : MonoBehaviour
 
         if (spawnZone == null) return null;
         // What to spawn
+        if (cardCount >= spawnZone.Length) return null;
         var cardToSpawn = Instantiate(_cardPrefab, spawnZone[cardCount]);
         cardToSpawn.GetComponent<Image>().sprite = cardOnScreen.CardSprite;
         return cardToSpawn;
@@ -276,15 +279,18 @@ public class GameController : MonoBehaviour
     {
         _humanPlayer.OnHit -= HandleHit;
         _humanPlayer.OnStay -= HandleHumanStay;
-        _humanPlayer.OnBusted -= HandleBust;
-        _humanPlayer.OnBlackjack -= HandleHumanBlackjack;
+        _humanPlayer.OnStay -= DeactivatePlayerActionButtons;
+        _humanPlayer.OnBusted -= HandleHumanBust;
+        _humanPlayer.OnBusted -= DeactivatePlayerActionButtons;
+        _humanPlayer.OnBlackjackOr21 -= HandleHumanStay;
+        _humanPlayer.OnBlackjackOr21 -= DeactivatePlayerActionButtons;
     }
     
     private void UnsubscribeToDealerEvents()
     {
         _cpuDealer.OnHit -= HandleHit;
         _cpuDealer.OnStay -= HandleCpuStay;
-        _cpuDealer.OnBlackjack -= HandleCpuBlackjack;
+        _cpuDealer.OnBlackjackOr21 -= HandleCpuStay;
     }
 
     public void OnClickQuitButton()
