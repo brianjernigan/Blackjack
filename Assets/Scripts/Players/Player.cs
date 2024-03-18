@@ -30,18 +30,17 @@ public abstract class Player
         OnStay?.Invoke();
     }
     
-    public event Action OnBlackjackOr21;
     protected void CheckForBlackjackOr21()
     {
         if (HasBlackjack || HasTwentyOne)
         {
-            OnBlackjackOr21?.Invoke();
+            RaiseOnStay();
         }
     }
     
     public bool HasBusted => PlayerHand.CalculateHandScore() > TwentyOne;
     public virtual bool HasBlackjack => PlayerHand.CalculateHandScore() == TwentyOne && PlayerHand.HasTwoCards();
-    public virtual bool HasTwentyOne => PlayerHand.CalculateHandScore() == TwentyOne;
+    public virtual bool HasTwentyOne => PlayerHand.CalculateHandScore() == TwentyOne && !PlayerHand.HasTwoCards();
     public virtual int Score => PlayerHand.CalculateHandScore();
     public int NumCardsInHand => PlayerHand.CardsInHand.Count;
 

@@ -60,8 +60,7 @@ public class GameController : MonoBehaviour
                 InitializeGame();
                 break;
             case GameState.Dealing:
-                _cpuDealer.DealInitialHands(_playerList);
-                SetGameState(GameState.PlayerTurn);
+                InitialDeal();
                 break;
             case GameState.PlayerTurn:
                 StartHumanTurn();
@@ -105,20 +104,25 @@ public class GameController : MonoBehaviour
         _humanPlayer.OnStay += DeactivatePlayerActionButtons;
         _humanPlayer.OnBusted += HandleHumanBust;
         _humanPlayer.OnBusted += DeactivatePlayerActionButtons;
-        _humanPlayer.OnBlackjackOr21 += HandleHumanStay;
-        _humanPlayer.OnBlackjackOr21 += DeactivatePlayerActionButtons;
     }
 
     private void SubscribeToDealerEvents()
     {
         _cpuDealer.OnHit += HandleHit;
         _cpuDealer.OnStay += HandleCpuStay;
-        _cpuDealer.OnBlackjackOr21 += HandleCpuStay;
     }
 
     public void OnClickDealButton()
     {
         SetGameState(GameState.Dealing);
+    }
+
+    private void InitialDeal()
+    {
+        _cpuDealer.DealInitialHands(_playerList);
+        _dealButton.gameObject.SetActive(false);
+        _dividerBar.SetActive(true);
+        SetGameState(GameState.PlayerTurn);
     }
 
     public void OnClickHitButton()
@@ -137,6 +141,11 @@ public class GameController : MonoBehaviour
     private void StartHumanTurn()
     {
         _humanPlayer.IsActive = true;
+        if (_humanPlayer.HasBlackjack)
+        { 
+            _humanPlayer.Stay();
+            return;
+        }
         ActivatePlayerActionButtons();
     }
     
@@ -179,17 +188,7 @@ public class GameController : MonoBehaviour
     {
         _cpuDealer.IsActive = true;
         RevealDealerCard();
-        
-        // Human wins on natural 21 if dealer does not have blackjack too
-        var onlyHumanHasBlackjack = _humanPlayer.HasBlackjack && !_cpuDealer.HasBlackjack;
-        if (onlyHumanHasBlackjack)
-        {
-            _cpuDealer.Stay();
-        }
-        else
-        {
-            StartCoroutine(DealerDecision());
-        }
+        StartCoroutine(DealerDecision());
     }
 
     private void RevealDealerCard()
@@ -203,13 +202,11 @@ public class GameController : MonoBehaviour
     {
         while (_cpuDealer.Score < 17)
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1.0f);
             _cpuDealer.Hit();
         }
 
-        yield return new WaitForSeconds(1.5f);
-        // Already handled
-        if (_cpuDealer.HasBlackjack || _cpuDealer.HasTwentyOne) yield break;
+        yield return new WaitForSeconds(1.0f);
         _cpuDealer.Stay();
     }
 
@@ -235,8 +232,6 @@ public class GameController : MonoBehaviour
     {
         _hitButton.gameObject.SetActive(true);
         _stayButton.gameObject.SetActive(true);
-        _dealButton.gameObject.SetActive(false);
-        _dividerBar.SetActive(true);
     }
 
     private void DeactivatePlayerActionButtons()
@@ -282,15 +277,12 @@ public class GameController : MonoBehaviour
         _humanPlayer.OnStay -= DeactivatePlayerActionButtons;
         _humanPlayer.OnBusted -= HandleHumanBust;
         _humanPlayer.OnBusted -= DeactivatePlayerActionButtons;
-        _humanPlayer.OnBlackjackOr21 -= HandleHumanStay;
-        _humanPlayer.OnBlackjackOr21 -= DeactivatePlayerActionButtons;
     }
     
     private void UnsubscribeToDealerEvents()
     {
         _cpuDealer.OnHit -= HandleHit;
         _cpuDealer.OnStay -= HandleCpuStay;
-        _cpuDealer.OnBlackjackOr21 -= HandleCpuStay;
     }
 
     public void OnClickQuitButton()
