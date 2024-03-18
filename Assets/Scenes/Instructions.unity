@@ -1088,18 +1088,18 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'In this game, you will be playing a simplified version of the popular
-    casino game, Blackjack. Here, the computer is the house and it will be competing
-    against you, the player. At the beginning of each round, all participants are
-    dealt two cards. The players can see both of their cards, but one of the House''s
-    cards will be hidden until the end of the round. The player will be given the
-    chance to take additional cards in an attempt to get as close to 21 as possible.
-    If a player goes over 21, they will "bust," and lose the game. Once the player
-    is done "hitting," the House will reveal their card and will take additional
-    cards if its total is less than 16. If the House busts, and the player has not,
-    the player wins. If neither have busted, then their hands will be compared and
-    the closer to 21 will win the round. A score of 21 is a Blackjack and will always
-    win the round. '
+  m_text: In this game, you will be playing a simplified version of the popular casino
+    game, Blackjack. Here, the computer is the house and it will be competing against
+    you, the player. At the beginning of each round, all participants are dealt two
+    cards. The players can see both of their cards, but one of the House's cards
+    will be hidden until the end of the round. The player will be given the chance
+    to take additional cards in an attempt to get as close to 21 as possible. If
+    a player goes over 21, they will "bust," and lose the game. Once the player is
+    done "hitting," the House will reveal their card and will take additional cards
+    if its total is less than 16. If the House busts, and the player has not, the
+    player wins. If neither have busted, then their hands will be compared and the
+    closer to 21 will win the round. A score of 21 is a Blackjack and will always
+    win the round, unless the dealer also has blackjack.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
