@@ -1,15 +1,16 @@
-using System;
-using System.Collections;
+//////////////////////////////////////////////
+//Assignment/Lab/Project: Blackjack
+//Name: Brian Jernigan
+//Section: SGD.213.2172
+//Instructor: Brian Sowers
+//Date: 03/18/2024
+/////////////////////////////////////////////
+
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.UI;
 using Random = System.Random;
 
 public class Deck
 {
-    public List<Card> CardsInDeck { get; }
-
     // Constructor
     public Deck(List<Card> cardsInDeck)
     {
@@ -18,14 +19,14 @@ public class Deck
         ShuffleDeck();
     }
 
+    public List<Card> CardsInDeck { get; }
+
+    // Ensure cards are not hidden on load
     private void ResetCardStates()
     {
-        foreach (var card in CardsInDeck)
-        {
-            card.IsHidden = false;
-        }
+        foreach (var card in CardsInDeck) card.IsHidden = false;
     }
-    
+
     // Fisher-Yates shuffling
     private void ShuffleDeck()
     {

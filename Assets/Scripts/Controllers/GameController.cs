@@ -1,57 +1,67 @@
+//////////////////////////////////////////////
+//Assignment/Lab/Project: Blackjack
+//Name: Brian Jernigan
+//Section: SGD.213.2172
+//Instructor: Brian Sowers
+//Date: 03/18/2024
+/////////////////////////////////////////////
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
-    [Header("Buttons")]
-    [SerializeField] private Button _dealButton;
+    // Worst case 
+    private const int MaxNumberOfCardsInHand = 11;
+
+    [Header("Buttons")] [SerializeField] private Button _dealButton;
+
     [SerializeField] private Button _hitButton;
     [SerializeField] private Button _stayButton;
-
-    [Header("Deck")]
-    private Deck _gameDeck;
     [SerializeField] private List<Card> _allCards;
-    
-    [Header("Players")]
-    private Human _humanPlayer;
-    private Dealer _cpuDealer;
-    private readonly List<Player> _playerList = new();
 
-    [Header("On-Screen Elements - Dealing")]
-    [SerializeField] private Transform[] _humanCardZones;
+    [Header("On-Screen Elements - Dealing")] [SerializeField]
+    private Transform[] _humanCardZones;
+
     [SerializeField] private Transform[] _dealerCardZones;
     [SerializeField] private GameObject _cardPrefab;
     [SerializeField] private GameObject _dividerBar;
 
-    [Header("Scores")] 
-    [SerializeField] private TMP_Text _humanScoreText;
+    [Header("Scores")] [SerializeField] private TMP_Text _humanScoreText;
+
     [SerializeField] private TMP_Text _dealerScoreText;
 
-    [Header("Game Over")]
-    [SerializeField] private GameObject _endGamePanel;
+    [Header("Game Over")] [SerializeField] private GameObject _endGamePanel;
+
     [SerializeField] private TMP_Text _gameResultText;
     [SerializeField] private Button _playAgainButton;
+    private readonly List<Player> _playerList = new();
+    private Dealer _cpuDealer;
+    private GameState _currentState;
 
+    [Header("Deck")] private Deck _gameDeck;
+
+    [Header("Players")] private Human _humanPlayer;
+
+    // On-screen hidden card
     private GameObject DealerHiddenCard { get; set; }
 
-    private const int MaxNumberOfCardsInHand = 11;
-
-    private GameState _currentState;
-    
     private void Start()
     {
         SetGameState(GameState.Initializing);
     }
-    
+
+    private void OnDestroy()
+    {
+        UnsubscribeToHumanEvents();
+        UnsubscribeToDealerEvents();
+    }
+
     private void SetGameState(GameState newState)
     {
         _currentState = newState;
@@ -103,25 +113,6 @@ public class GameController : MonoBehaviour
         _playerList.Add(_cpuDealer);
     }
 
-    private void SubscribeToHumanEvents()
-    {
-        _humanPlayer.OnHit += HandleHit;
-        _humanPlayer.OnStay += HandleHumanStay;
-        _humanPlayer.OnStay += DeactivatePlayerActionButtons;
-        _humanPlayer.OnBusted += HandleHumanBust;
-        _humanPlayer.OnBusted += DeactivatePlayerActionButtons;
-    }
-
-    private void SubscribeToDealerEvents()
-    {
-        _cpuDealer.OnHit += HandleHit;
-        _cpuDealer.OnStay += HandleCpuStay;
-    }
-
-    public void OnClickDealButton()
-    {
-        SetGameState(GameState.Dealing);
-    }
 
     private void InitialDeal()
     {
@@ -131,18 +122,6 @@ public class GameController : MonoBehaviour
         SetGameState(GameState.HumanTurn);
     }
 
-    public void OnClickHitButton()
-    {
-        var cannotHit = _humanPlayer.NumCardsInHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
-                        _humanPlayer.HasBlackjack || _humanPlayer.HasTwentyOne;
-        if (cannotHit) return;
-        _humanPlayer.Hit();
-    }
-    
-    public void OnClickStayButton()
-    {
-        _humanPlayer.Stay();
-    }
 
     private void StartHumanTurn()
     {
@@ -150,7 +129,7 @@ public class GameController : MonoBehaviour
         if (_humanPlayer.HasBlackjack) return;
         ActivatePlayerActionButtons();
     }
-    
+
     private void EndGame()
     {
         DetermineWinner();
@@ -161,41 +140,26 @@ public class GameController : MonoBehaviour
     {
         var resultText = "";
         if (_humanPlayer.HasBusted)
-        {
             resultText = "You lose";
-        } 
         else if (_cpuDealer.HasBusted && !_humanPlayer.HasBusted)
-        {
             resultText = "You win";
-        }
         else if (_humanPlayer.HasBlackjack && !_cpuDealer.HasBlackjack)
-        {
             resultText = "You win";
-        } else if (_humanPlayer.HasBlackjack && _cpuDealer.HasBlackjack)
-        {
+        else if (_humanPlayer.HasBlackjack && _cpuDealer.HasBlackjack)
             resultText = "Tie!";
-        } else if (_cpuDealer.HasBlackjack && !_humanPlayer.HasBlackjack)
-        {
+        else if (_cpuDealer.HasBlackjack && !_humanPlayer.HasBlackjack)
             resultText = "You lose";
-        } else if (_humanPlayer.HasTwentyOne && !_cpuDealer.HasTwentyOne)
-        {
+        else if (_humanPlayer.HasTwentyOne && !_cpuDealer.HasTwentyOne)
             resultText = "You win";
-        } else if (_humanPlayer.HasTwentyOne && _cpuDealer.HasTwentyOne)
-        {
+        else if (_humanPlayer.HasTwentyOne && _cpuDealer.HasTwentyOne)
             resultText = "Tie";
-        } else if (!_humanPlayer.HasTwentyOne && _cpuDealer.HasTwentyOne)
-        {
+        else if (!_humanPlayer.HasTwentyOne && _cpuDealer.HasTwentyOne)
             resultText = "You lose";
-        } else if (_humanPlayer.Score > _cpuDealer.Score)
-        {
+        else if (_humanPlayer.Score > _cpuDealer.Score)
             resultText = "You win";
-        } else if (_humanPlayer.Score == _cpuDealer.Score)
-        {
+        else if (_humanPlayer.Score == _cpuDealer.Score)
             resultText = "Tie";
-        } else if (_cpuDealer.Score > _humanPlayer.Score)
-        {
-            resultText = "You lose";
-        } 
+        else if (_cpuDealer.Score > _humanPlayer.Score) resultText = "You lose";
 
         return resultText;
     }
@@ -203,13 +167,9 @@ public class GameController : MonoBehaviour
     private void HandleHit(Player player, Card card)
     {
         if (player is Dealer && player.NumCardsInHand == 1)
-        {
             DealerHiddenCard = SpawnCard(card, player.NumCardsInHand - 1, player);
-        }
         else
-        {
             SpawnCard(card, player.NumCardsInHand - 1, player);
-        }
         UpdateScoreText(player);
     }
 
@@ -229,7 +189,7 @@ public class GameController : MonoBehaviour
         StopCoroutine(DealerDecision());
         SetGameState(GameState.RoundOver);
     }
-    
+
     private void StartDealerTurn()
     {
         _cpuDealer.IsActive = true;
@@ -239,6 +199,7 @@ public class GameController : MonoBehaviour
             SetGameState(GameState.RoundOver);
             return;
         }
+
         StartCoroutine(DealerDecision());
     }
 
@@ -301,46 +262,41 @@ public class GameController : MonoBehaviour
         };
 
         if (playerScoreText is null) return;
-        
+
         if (activePlayer.HasBlackjack)
-        {
             playerScoreText.text = "Blackjack!";
-        } else if (activePlayer.HasBusted)
-        {
+        else if (activePlayer.HasBusted)
             playerScoreText.text = "Busted!";
-        }
         else
-        {
             playerScoreText.text = activePlayer.Score.ToString();
-        }
     }
-    
-    private void OnDestroy()
-    {
-        UnsubscribeToHumanEvents();
-        UnsubscribeToDealerEvents();
-    }
-    
-    private void UnsubscribeToHumanEvents()
-    {
-        _humanPlayer.OnHit -= HandleHit;
-        _humanPlayer.OnStay -= HandleHumanStay;
-        _humanPlayer.OnStay -= DeactivatePlayerActionButtons;
-        _humanPlayer.OnBusted -= HandleHumanBust;
-        _humanPlayer.OnBusted -= DeactivatePlayerActionButtons;
-    }
-    
-    private void UnsubscribeToDealerEvents()
-    {
-        _cpuDealer.OnHit -= HandleHit;
-        _cpuDealer.OnStay -= HandleCpuStay;
-    }
+
 
     private void DisplayResults()
     {
         _endGamePanel.SetActive(true);
         _gameResultText.text = DetermineWinner();
         _dividerBar.SetActive(false);
+    }
+
+    #region ButtonClicks
+
+    public void OnClickDealButton()
+    {
+        SetGameState(GameState.Dealing);
+    }
+
+    public void OnClickHitButton()
+    {
+        var cannotHit = _humanPlayer.NumCardsInHand >= MaxNumberOfCardsInHand || _humanPlayer.HasBusted ||
+                        _humanPlayer.HasBlackjack || _humanPlayer.HasTwentyOne;
+        if (cannotHit) return;
+        _humanPlayer.Hit();
+    }
+
+    public void OnClickStayButton()
+    {
+        _humanPlayer.Stay();
     }
 
     public void OnClickPlayAgainButton()
@@ -352,4 +308,40 @@ public class GameController : MonoBehaviour
     {
         Application.Quit();
     }
+
+    #endregion
+
+    #region EventSubscriptions
+
+    private void SubscribeToHumanEvents()
+    {
+        _humanPlayer.OnHit += HandleHit;
+        _humanPlayer.OnStay += HandleHumanStay;
+        _humanPlayer.OnStay += DeactivatePlayerActionButtons;
+        _humanPlayer.OnBusted += HandleHumanBust;
+        _humanPlayer.OnBusted += DeactivatePlayerActionButtons;
+    }
+
+    private void SubscribeToDealerEvents()
+    {
+        _cpuDealer.OnHit += HandleHit;
+        _cpuDealer.OnStay += HandleCpuStay;
+    }
+
+    private void UnsubscribeToHumanEvents()
+    {
+        _humanPlayer.OnHit -= HandleHit;
+        _humanPlayer.OnStay -= HandleHumanStay;
+        _humanPlayer.OnStay -= DeactivatePlayerActionButtons;
+        _humanPlayer.OnBusted -= HandleHumanBust;
+        _humanPlayer.OnBusted -= DeactivatePlayerActionButtons;
+    }
+
+    private void UnsubscribeToDealerEvents()
+    {
+        _cpuDealer.OnHit -= HandleHit;
+        _cpuDealer.OnStay -= HandleCpuStay;
+    }
+
+    #endregion
 }

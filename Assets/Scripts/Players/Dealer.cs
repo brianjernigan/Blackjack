@@ -1,11 +1,24 @@
+//////////////////////////////////////////////
+//Assignment/Lab/Project: Blackjack
+//Name: Brian Jernigan
+//Section: SGD.213.2172
+//Instructor: Brian Sowers
+//Date: 03/18/2024
+/////////////////////////////////////////////
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class Dealer : Player
 {
+    // Constructor
+    public Dealer(Deck gameDeck)
+    {
+        GameDeck = gameDeck;
+    }
+
+    // Only Dealer can interact with the deck
     private Deck GameDeck { get; }
     public Card HiddenCard { get; private set; }
 
@@ -13,10 +26,8 @@ public class Dealer : Player
     {
         get
         {
-            if (HiddenCard.IsHidden)
-            {
-                return false;
-            }
+            // "Hide" blackjack if still player's turn
+            if (HiddenCard.IsHidden) return false;
 
             return PlayerHand.CalculateHandScore() == TwentyOne && NumCardsInHand == 2;
         }
@@ -26,10 +37,8 @@ public class Dealer : Player
     {
         get
         {
-            if (HiddenCard.IsHidden)
-            {
-                return false;
-            }
+            // "Hide" 21 if still player's turn
+            if (HiddenCard.IsHidden) return false;
 
             return PlayerHand.CalculateHandScore() == TwentyOne;
         }
@@ -39,27 +48,16 @@ public class Dealer : Player
     {
         get
         {
-            if (HiddenCard.IsHidden)
-            {
-                return PlayerHand.CalculateHandScore() - HiddenCard.CardValue;
-            }
+            // Adjust score if still player's turn
+            if (HiddenCard.IsHidden) return PlayerHand.CalculateHandScore() - HiddenCard.CardValue;
 
             return PlayerHand.CalculateHandScore();
         }
     }
 
-    // Constructor
-    public Dealer(Deck gameDeck)
-    {
-        GameDeck = gameDeck;
-    }
-
     public Card DrawCardFromDeck()
     {
-        if (!GameDeck.CardsInDeck.Any())
-        {
-            throw new InvalidOperationException("The deck is empty.");
-        }
+        if (!GameDeck.CardsInDeck.Any()) throw new InvalidOperationException("The deck is empty.");
 
         var topCard = GameDeck.CardsInDeck[0];
         GameDeck.CardsInDeck.RemoveAt(0);
@@ -70,7 +68,8 @@ public class Dealer : Player
     {
         var topCard = DrawCardFromDeck();
         PlayerHand.AddCardToHand(topCard);
-        
+
+        // Set Hidden Card on initial card
         if (NumCardsInHand == 1)
         {
             HiddenCard = topCard;
@@ -78,7 +77,7 @@ public class Dealer : Player
         }
 
         RaiseOnHit(topCard);
-
+        // Avoid multiple stays before turn
         if (!IsActive) return;
         CheckForBust();
         CheckForBlackjackOr21();
@@ -87,12 +86,8 @@ public class Dealer : Player
     public void DealInitialHands(List<Player> activePlayers)
     {
         for (var i = 0; i < 2; i++)
-        {
             foreach (var player in activePlayers)
-            {
                 player.Hit();
-            }
-        }
     }
 
     public void FlipHiddenCard()

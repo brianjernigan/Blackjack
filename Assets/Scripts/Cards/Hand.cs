@@ -1,8 +1,13 @@
-using System;
-using System.Collections;
+//////////////////////////////////////////////
+//Assignment/Lab/Project: Blackjack
+//Name: Brian Jernigan
+//Section: SGD.213.2172
+//Instructor: Brian Sowers
+//Date: 03/18/2024
+/////////////////////////////////////////////
+
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class Hand
 {
@@ -12,6 +17,7 @@ public class Hand
     {
         var score = CardsInHand.Sum(card => card.CardValue);
         var elevenCount = CountAces();
+        // Decrease value of aces when score is over 21
         while (elevenCount > 0 && score > 21)
         {
             score -= 10;
@@ -31,6 +37,7 @@ public class Hand
         CardsInHand.Add(cardToAdd);
     }
 
+    // For determining natural 21 or not
     public bool HasTwoCards()
     {
         return CardsInHand.Count == 2;
