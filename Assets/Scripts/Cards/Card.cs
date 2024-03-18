@@ -11,12 +11,6 @@ public class Card : ScriptableObject
     [SerializeField] private Sprite _frontOfCardSprite;
     [SerializeField] private Sprite _backOfCardSprite;
 
-    // Resets scriptable object state when loaded
-    private void OnEnable()
-    {
-        IsHidden = false;
-    }
-
     public int CardValue
     {
         get => _cardValue;

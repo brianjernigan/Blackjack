@@ -75,7 +75,7 @@ public class GameController : MonoBehaviour
                 StartDealerTurn();
                 break;
             case GameState.RoundOver:
-                DetermineGameOutcome();
+                EndGame();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -151,11 +151,55 @@ public class GameController : MonoBehaviour
         ActivatePlayerActionButtons();
     }
     
-    private void DetermineGameOutcome()
+    private void EndGame()
     {
+        DetermineWinner();
         DisplayResults();
     }
-    
+
+    private string DetermineWinner()
+    {
+        var resultText = "";
+        if (_humanPlayer.HasBusted)
+        {
+            resultText = "You lose";
+        } 
+        else if (_cpuDealer.HasBusted && !_humanPlayer.HasBusted)
+        {
+            resultText = "You win";
+        }
+        else if (_humanPlayer.HasBlackjack && !_cpuDealer.HasBlackjack)
+        {
+            resultText = "You win";
+        } else if (_humanPlayer.HasBlackjack && _cpuDealer.HasBlackjack)
+        {
+            resultText = "Tie!";
+        } else if (_cpuDealer.HasBlackjack && !_humanPlayer.HasBlackjack)
+        {
+            resultText = "You lose";
+        } else if (_humanPlayer.HasTwentyOne && !_cpuDealer.HasTwentyOne)
+        {
+            resultText = "You win";
+        } else if (_humanPlayer.HasTwentyOne && _cpuDealer.HasTwentyOne)
+        {
+            resultText = "Tie";
+        } else if (!_humanPlayer.HasTwentyOne && _cpuDealer.HasTwentyOne)
+        {
+            resultText = "You lose";
+        } else if (_humanPlayer.Score > _cpuDealer.Score)
+        {
+            resultText = "You win";
+        } else if (_humanPlayer.Score == _cpuDealer.Score)
+        {
+            resultText = "Tie";
+        } else if (_cpuDealer.Score > _humanPlayer.Score)
+        {
+            resultText = "You lose";
+        } 
+
+        return resultText;
+    }
+
     private void HandleHit(Player player, Card card)
     {
         if (player is Dealer && player.NumCardsInHand == 1)
@@ -295,7 +339,7 @@ public class GameController : MonoBehaviour
     private void DisplayResults()
     {
         _endGamePanel.SetActive(true);
-        _gameResultText.text = "Game Over!";
+        _gameResultText.text = DetermineWinner();
         _dividerBar.SetActive(false);
     }
 

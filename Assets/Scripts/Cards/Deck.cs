@@ -14,7 +14,16 @@ public class Deck
     public Deck(List<Card> cardsInDeck)
     {
         CardsInDeck = cardsInDeck;
+        ResetCardStates();
         ShuffleDeck();
+    }
+
+    private void ResetCardStates()
+    {
+        foreach (var card in CardsInDeck)
+        {
+            card.IsHidden = false;
+        }
     }
     
     // Fisher-Yates shuffling
