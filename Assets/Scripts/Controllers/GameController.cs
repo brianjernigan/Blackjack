@@ -5,6 +5,7 @@ using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -34,6 +35,11 @@ public class GameController : MonoBehaviour
     [Header("Scores")] 
     [SerializeField] private TMP_Text _humanScoreText;
     [SerializeField] private TMP_Text _dealerScoreText;
+
+    [Header("Game Over")]
+    [SerializeField] private GameObject _endGamePanel;
+    [SerializeField] private TMP_Text _gameResultText;
+    [SerializeField] private Button _playAgainButton;
 
     private GameObject DealerHiddenCard { get; set; }
 
@@ -147,7 +153,7 @@ public class GameController : MonoBehaviour
     
     private void DetermineGameOutcome()
     {
-        Debug.Log("win/loss");
+        DisplayResults();
     }
     
     private void HandleHit(Player player, Card card)
@@ -284,6 +290,18 @@ public class GameController : MonoBehaviour
     {
         _cpuDealer.OnHit -= HandleHit;
         _cpuDealer.OnStay -= HandleCpuStay;
+    }
+
+    private void DisplayResults()
+    {
+        _endGamePanel.SetActive(true);
+        _gameResultText.text = "Game Over!";
+        _dividerBar.SetActive(false);
+    }
+
+    public void OnClickPlayAgainButton()
+    {
+        SceneManager.LoadScene("Blackjack");
     }
 
     public void OnClickQuitButton()
