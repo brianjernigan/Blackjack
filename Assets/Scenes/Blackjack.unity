@@ -2775,7 +2775,7 @@ GameObject:
   - component: {fileID: 1373666914}
   - component: {fileID: 1373666913}
   m_Layer: 0
-  m_Name: GameController
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2793,9 +2793,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aab9f6d1026737f4886ce04a6245250a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dealButton: {fileID: 72011000}
-  _hitButton: {fileID: 421784717}
-  _stayButton: {fileID: 82193127}
   _allCards:
   - {fileID: 11400000, guid: e7326ad493179344f82c2f40c7c384c6, type: 2}
   - {fileID: 11400000, guid: ec9bbf5a39e5bc94c8ba0d3655b947a3, type: 2}
@@ -2849,37 +2846,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: efceb7d01950d11459e6952a7a4e6eb7, type: 2}
   - {fileID: 11400000, guid: 25212cc45f066774aa9d7fddf149d15e, type: 2}
   - {fileID: 11400000, guid: 6173f2c35a2e306408c8cbb7d7405b77, type: 2}
-  _humanCardZones:
-  - {fileID: 636669495}
-  - {fileID: 1493586369}
-  - {fileID: 1632100298}
-  - {fileID: 1370588355}
-  - {fileID: 1925131252}
-  - {fileID: 19344347}
-  - {fileID: 1325389627}
-  - {fileID: 1364089963}
-  - {fileID: 1429527527}
-  - {fileID: 1673890398}
-  - {fileID: 127823048}
-  _dealerCardZones:
-  - {fileID: 18918346}
-  - {fileID: 953275098}
-  - {fileID: 1362443035}
-  - {fileID: 1364813414}
-  - {fileID: 1400723133}
-  - {fileID: 4007452}
-  - {fileID: 1056428928}
-  - {fileID: 482598075}
-  - {fileID: 474610500}
-  - {fileID: 298186285}
-  - {fileID: 1262698173}
-  _cardPrefab: {fileID: 3435736287366989246, guid: 7bf2d4edc18d3b0419de265a35eb257a, type: 3}
-  _dividerBar: {fileID: 107949425}
-  _humanScoreText: {fileID: 976268080}
-  _dealerScoreText: {fileID: 1557647817}
-  _endGamePanel: {fileID: 1022511640}
-  _gameResultText: {fileID: 1932626993}
-  _playAgainButton: {fileID: 0}
 --- !u!4 &1373666914
 Transform:
   m_ObjectHideFlags: 0
@@ -3134,6 +3100,83 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1557647815}
   m_CullTransparentMesh: 1
+--- !u!1 &1607116581
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1607116583}
+  - component: {fileID: 1607116582}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1607116582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607116581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e42a7fc94a34d6347946760c4fefece1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dealButton: {fileID: 72011000}
+  _hitButton: {fileID: 421784717}
+  _stayButton: {fileID: 82193127}
+  _humanScoreText: {fileID: 976268080}
+  _dealerScoreText: {fileID: 1557647817}
+  _dividerBar: {fileID: 107949425}
+  _humanCardZones:
+  - {fileID: 636669495}
+  - {fileID: 1493586369}
+  - {fileID: 1632100298}
+  - {fileID: 1370588355}
+  - {fileID: 1925131252}
+  - {fileID: 19344347}
+  - {fileID: 1325389627}
+  - {fileID: 1364089963}
+  - {fileID: 1429527527}
+  - {fileID: 1673890398}
+  - {fileID: 127823048}
+  _dealerCardZones:
+  - {fileID: 18918346}
+  - {fileID: 953275098}
+  - {fileID: 1362443035}
+  - {fileID: 1364813414}
+  - {fileID: 1400723133}
+  - {fileID: 4007452}
+  - {fileID: 1056428928}
+  - {fileID: 482598075}
+  - {fileID: 474610500}
+  - {fileID: 298186285}
+  - {fileID: 1262698173}
+  _cardPrefab: {fileID: 3435736287366989246, guid: 7bf2d4edc18d3b0419de265a35eb257a, type: 3}
+  _endGamePanel: {fileID: 1022511640}
+  _gameResultText: {fileID: 1932626993}
+--- !u!4 &1607116583
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607116581}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 613.88824, y: 311.11102, z: -5.992363}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1632100297
 GameObject:
   m_ObjectHideFlags: 0
@@ -3251,7 +3294,7 @@ GameObject:
   - component: {fileID: 1932626994}
   - component: {fileID: 1932626993}
   m_Layer: 5
-  m_Name: ResultText
+  m_Name: GameResultText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3649,3 +3692,4 @@ SceneRoots:
   - {fileID: 1274648079}
   - {fileID: 558205121}
   - {fileID: 1373666914}
+  - {fileID: 1607116583}
